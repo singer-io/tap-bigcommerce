@@ -1,0 +1,68 @@
+{
+  "type": "object",
+  "name": "coupons",
+  "properties": {
+    "id": {
+      "$ref": "type-integer.json"
+    },
+    "name": {
+      "$ref": "type-string.json"
+    },
+    "type": {
+      "$ref": "type-string.json"
+    },
+    "amount": {
+      "$ref": "type-number.json"
+    },
+    "min_purchase": {
+      "$ref": "type-number.json"
+    },
+    "expires": {
+      "$ref": "type-datetime.json"
+    },
+    "enabled": {
+      "$ref": "type-boolean.json"
+    },
+    "code": {
+      "$ref": "type-string.json"
+    },
+    "applies_to": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "$ref": "type-string.json"
+        },
+        "ids": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "type-integer.json"
+          }
+        }
+      }
+    },
+    "num_uses": {
+      "$ref": "type-integer.json"
+    },
+    "max_uses": {
+      "$ref": "type-integer.json"
+    },
+    "max_uses_per_customer": {
+      "$ref": "type-integer.json"
+    },
+    "restricted_to": {
+      "$ref": "type-string.json"
+    },
+    "shipping_methods": {
+      "type": ["array", "null"],
+      "items": {
+        "$ref": "type-string.json"
+      }
+    },
+    "date_created": {
+      "$ref": "type-datetime.json"
+    }
+  }
+}

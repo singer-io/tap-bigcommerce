@@ -1,0 +1,501 @@
+{
+  "type": "object",
+  "name": "orders",
+  "properties": {
+    "id": {
+      "$ref": "type-integer.json"
+    },
+    "customer_id": {
+      "$ref": "type-integer.json"
+    },
+    "date_created": {
+      "$ref": "type-datetime.json"
+    },
+    "date_modified": {
+      "$ref": "type-datetime.json"
+    },
+    "date_shipped": {
+      "$ref": "type-datetime.json"
+    },
+    "status_id": {
+      "$ref": "type-integer.json"
+    },
+    "cart_id": {
+      "$ref": "type-string.json"
+    },
+    "status": {
+      "$ref": "type-string.json"
+    },
+    "custom_status": {
+      "$ref": "type-string.json"
+    },
+    "subtotal_ex_tax": {
+      "$ref": "type-number.json"
+    },
+    "subtotal_inc_tax": {
+      "$ref": "type-number.json"
+    },
+    "subtotal_tax": {
+      "$ref": "type-number.json"
+    },
+    "base_shipping_cost": {
+      "$ref": "type-number.json"
+    },
+    "shipping_cost_ex_tax": {
+      "$ref": "type-number.json"
+    },
+    "shipping_cost_inc_tax": {
+      "$ref": "type-number.json"
+    },
+    "shipping_cost_tax": {
+      "$ref": "type-number.json"
+    },
+    "shipping_cost_tax_class_id": {
+      "$ref": "type-integer.json"
+    },
+    "base_handling_cost": {
+      "$ref": "type-number.json"
+    },
+    "handling_cost_ex_tax": {
+      "$ref": "type-number.json"
+    },
+    "handling_cost_inc_tax": {
+      "$ref": "type-number.json"
+    },
+    "handling_cost_tax": {
+      "$ref": "type-number.json"
+    },
+    "handling_cost_tax_class_id": {
+      "$ref": "type-integer.json"
+    },
+    "base_wrapping_cost": {
+      "$ref": "type-number.json"
+    },
+    "wrapping_cost_ex_tax": {
+      "$ref": "type-number.json"
+    },
+    "wrapping_cost_inc_tax": {
+      "$ref": "type-number.json"
+    },
+    "wrapping_cost_tax": {
+      "$ref": "type-number.json"
+    },
+    "wrapping_cost_tax_class_id": {
+      "$ref": "type-integer.json"
+    },
+    "total_ex_tax": {
+      "$ref": "type-number.json"
+    },
+    "total_inc_tax": {
+      "$ref": "type-number.json"
+    },
+    "total_tax": {
+      "$ref": "type-number.json"
+    },
+    "items_total": {
+      "$ref": "type-integer.json"
+    },
+    "items_shipped": {
+      "$ref": "type-integer.json"
+    },
+    "payment_method": {
+      "$ref": "type-string.json"
+    },
+    "payment_provider_id": {
+      "$ref": "type-string.json"
+    },
+    "payment_status": {
+      "$ref": "type-string.json"
+    },
+    "refunded_amount": {
+      "$ref": "type-number.json"
+    },
+    "order_is_digital": {
+      "$ref": "type-boolean.json"
+    },
+    "store_credit_amount": {
+      "$ref": "type-number.json"
+    },
+    "gift_certificate_amount": {
+      "$ref": "type-number.json"
+    },
+    "ip_address": {
+      "$ref": "type-string.json"
+    },
+    "geoip_country": {
+      "$ref": "type-string.json"
+    },
+    "geoip_country_iso2": {
+      "$ref": "type-string.json"
+    },
+    "currency_id": {
+      "$ref": "type-integer.json"
+    },
+    "currency_code": {
+      "$ref": "type-string.json"
+    },
+    "currency_exchange_rate": {
+      "$ref": "type-number.json"
+    },
+    "default_currency_id": {
+      "$ref": "type-integer.json"
+    },
+    "default_currency_code": {
+      "$ref": "type-string.json"
+    },
+    "staff_notes": {
+      "$ref": "type-string.json"
+    },
+    "customer_message": {
+      "$ref": "type-string.json"
+    },
+    "discount_amount": {
+      "$ref": "type-string.json"
+    },
+    "coupon_discount": {
+      "$ref": "type-number.json"
+    },
+    "shipping_address_count": {
+      "$ref": "type-integer.json"
+    },
+    "is_deleted": {
+      "$ref": "type-boolean.json"
+    },
+    "is_email_opt_in": {
+      "$ref": "type-boolean.json"
+    },
+    "ebay_order_id": {
+      "$ref": "type-string.json"
+    },
+    "billing_address": {
+      "type": "object",
+      "properties": {
+      	"first_name": {
+          "$ref": "type-string.json"
+        },
+      	"last_name": {
+          "$ref": "type-string.json"
+        },
+      	"company": {
+          "$ref": "type-string.json"
+        },
+        "street_1": {
+          "$ref": "type-string.json"
+        },
+        "street_2": {
+          "$ref": "type-string.json"
+        },
+      	"city": {
+          "$ref": "type-string.json"
+        },
+      	"state": {
+          "$ref": "type-string.json"
+        },
+      	"zip": {
+          "$ref": "type-string.json"
+        },
+      	"country": {
+          "$ref": "type-string.json"
+        },
+      	"country_iso2": {
+          "$ref": "type-string.json"
+        },
+      	"email": {
+          "$ref": "type-string.json"
+        },
+        "phone": {
+          "$ref": "type-string.json"
+        },
+        "form_fields": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "object",
+            "name": {
+              "$ref": "type-string.json"
+            },
+            "value": {
+              "$ref": "type-string.json"
+            }
+          }
+        }
+      }
+    },    
+    "order_source": {
+      "$ref": "type-string.json"
+    },
+    "external_source": {
+      "$ref": "type-string.json"
+    },
+    "products": {
+      "type": ["array","null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "type-integer.json"
+          },
+          "order_id": {
+            "$ref": "type-integer.json"
+          },
+          "product_id": {
+            "$ref": "type-integer.json"
+          },
+          "order_address_id": {
+            "$ref": "type-integer.json"
+          },
+          "name": {
+            "$ref": "type-string.json"
+          },
+          "sku": {
+            "$ref": "type-string.json"
+          },
+          "type": {
+            "$ref": "type-string.json"
+          },
+          "base_price": {
+            "$ref": "type-number.json"
+          },
+          "price_ex_tax": {
+            "$ref": "type-number.json"
+          },
+          "price_inc_tax": {
+            "$ref": "type-number.json"
+          },
+          "price_tax": {
+            "$ref": "type-number.json"
+          },
+          "base_total": {
+            "$ref": "type-number.json"
+          },
+          "total_ex_tax": {
+            "$ref": "type-number.json"
+          },
+          "total_inc_tax": {
+            "$ref": "type-number.json"
+          },
+          "total_tax": {
+            "$ref": "type-number.json"
+          },
+          "quantity": {
+            "$ref": "type-integer.json"
+          },
+          "base_cost_price": {
+            "$ref": "type-number.json"
+          },
+          "cost_price_inc_tax": {
+            "$ref": "type-number.json"
+          },
+          "cost_price_ex_tax": {
+            "$ref": "type-number.json"
+          },
+          "weight": {
+            "$ref": "type-number.json"
+          },
+          "width": {
+            "$ref": "type-string.json"
+          },
+          "depth": {
+            "$ref": "type-string.json"
+          },
+          "height": {
+            "$ref": "type-string.json"
+          },
+          "cost_price_tax": {
+            "$ref": "type-number.json"
+          },
+          "is_refunded": {
+            "$ref": "type-boolean.json"
+          },
+          "quantity_refunded": {
+            "$ref": "type-integer.json"
+          },
+          "refund_amount": {
+            "$ref": "type-number.json"
+          },
+          "return_id": {
+            "$ref": "type-integer.json"
+          },
+          "wrapping_name": {
+            "$ref": "type-string.json"
+          },
+          "base_wrapping_cost": {
+            "$ref": "type-number.json"
+          },
+          "wrapping_cost_ex_tax": {
+            "$ref": "type-number.json"
+          },
+          "wrapping_cost_inc_tax": {
+            "$ref": "type-number.json"
+          },
+          "wrapping_cost_tax": {
+            "$ref": "type-number.json"
+          },
+          "wrapping_message": {
+            "$ref": "type-string.json"
+          },
+          "quantity_shipped": {
+            "$ref": "type-integer.json"
+          },
+          "event_name": {
+            "$ref": "type-string.json"
+          },
+          "event_date": {
+            "$ref": "type-datetime.json"
+          },
+          "fixed_shipping_cost": {
+            "$ref": "type-number.json"
+          },
+          "ebay_item_id": {
+            "$ref": "type-string.json"
+          },
+          "ebay_transaction_id": {
+            "$ref": "type-string.json"
+          },
+          "option_set_id": {
+            "$ref": "type-integer.json"
+          },
+          "parent_order_product_id": {
+            "$ref": "type-integer.json"
+          },
+          "is_bundled_product": {
+            "$ref": "type-boolean.json"
+          },
+          "bin_picking_number": {
+            "$ref": "type-string.json"
+          },
+          "applied_discounts": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "$ref": "type-string.json"
+                },
+                "type": {
+                  "$ref": "type-string.json"
+                },
+                "amount": {
+                  "$ref": "type-number.json"
+                },
+                "name": {
+                  "$ref": "type-string.json"
+                },
+                "code": {
+                  "$ref": "type-string.json"
+                }
+              }
+            }
+          },
+          "product_options": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "$ref": "type-integer.json"
+                },
+                "option_id": {
+                  "$ref": "type-integer.json"
+                },
+                "order_product_id": {
+                  "$ref": "type-integer.json"
+                },
+                "product_option_id": {
+                  "$ref": "type-integer.json"
+                },
+                "display_name": {
+                  "$ref": "type-string.json"
+                },
+                "display_value": {
+                  "$ref": "type-string.json"
+                },
+                "value": {
+                  "$ref": "type-number.json"
+                },
+                "type": {
+                  "$ref": "type-string.json"
+                },
+                "name": {
+                  "$ref": "type-string.json"
+                },
+                "display_style": {
+                  "$ref": "type-string.json"
+                }
+              }
+            }
+          },
+          "external_id": {
+            "$ref": "type-integer.json"
+          }
+        }
+      }
+    },
+    "coupons": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": ["object", "null"],
+        "properties": {
+          "id": {
+            "$ref": "type-integer.json"
+          },
+          "coupon_id": {
+            "$ref": "type-integer.json"
+          },
+          "order_id": {
+            "$ref": "type-integer.json"
+          },
+          "code": {
+            "$ref": "type-string.json"
+          },
+          "amount": {
+            "$ref": "type-number.json"
+          },
+          "type": {
+            "$ref": "type-string.json"
+          },
+          "discount": {
+            "$ref": "type-number.json"
+          }
+        }
+      }
+    },
+    "external_id": {
+      "$ref": "type-string.json"
+    },
+    "external_merchant_id": {
+      "$ref": "type-string.json"
+    },
+    "form_fields": {
+      "type": ["array","null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "type-string.json"
+          },
+          "value": {
+            "$ref": "type-string.json"
+          }
+        }
+      }
+    },
+    "channel_id": {
+      "$ref": "type-integer.json"
+    },
+    "tax_provider_id": {
+      "$ref": "type-string.json"
+    }
+  }
+}
