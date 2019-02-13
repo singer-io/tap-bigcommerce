@@ -24,7 +24,8 @@ def do_discover(client):
 
 
 def stream_is_selected(mdata):
-    return mdata.get((), {}).get('selected', mdata.get((), {}).get('selected-by-default', False))
+    return mdata.get((), {}).get('selected', mdata.get((), {}).get(
+        'selected-by-default', False))
 
 
 def get_selected_streams(catalog):
@@ -54,11 +55,14 @@ def do_sync(client, catalog, state, start_date):
     if state == {}:
         state = {'bookmarks': {}}
         for stream in catalog.streams:
-            if stream.tap_stream_id in selected_stream_names:
+            if (
+                stream.tap_stream_id in selected_stream_names
+            ) and (
+                stream.replication_key == "date_modified"
+            ):
                 state['bookmarks'][stream.tap_stream_id] = {
                     stream.replication_key: start_date
                 }
-
 
     for stream in catalog.streams:
         stream_name = stream.tap_stream_id
@@ -69,14 +73,16 @@ def do_sync(client, catalog, state, start_date):
             logger.info("%s: Skipping - not selected", stream_name)
             continue
 
-        key_properties = metadata.get(mdata, (), 'table-key-properties')
         singer.write_schema(
-            stream_name, stream.schema.to_dict(), key_properties
+            stream_name,
+            stream.schema.to_dict(),
+            metadata.get(mdata, (), 'table-key-properties')
         )
+
         logger.info("%s: Starting sync", stream_name)
+
         instance = STREAMS[stream_name](client)
         instance.stream = stream
-        logger.debug(state)
         counter_value = sync_stream(state, instance)
         singer.write_state(state)
         logger.info("%s: Completed sync (%s rows)", stream_name, counter_value)
@@ -89,7 +95,7 @@ def do_sync(client, catalog, state, start_date):
 def main():
 
     # DEBUG
-    logger.setLevel('DEBUG')
+    # logger.setLevel('DEBUG')
 
     # Parse command line arguments
     args = utils.parse_args(REQUIRED_CONFIG_KEYS)
