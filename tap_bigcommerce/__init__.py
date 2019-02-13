@@ -24,8 +24,7 @@ def do_discover(client):
 
 
 def stream_is_selected(mdata):
-    return mdata.get((), {}).get('selected', mdata.get((), {}).get(
-        'selected-by-default', False))
+    return mdata.get((), {}).get('selected', False)
 
 
 def get_selected_streams(catalog):

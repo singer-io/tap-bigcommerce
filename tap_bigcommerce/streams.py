@@ -21,6 +21,7 @@ class Stream():
     bookmark_start = None
     session_bookmark = None
     filter_records_by_bookmark = False
+    auto_select_fields = True
 
     def __init__(self, client):
         self.client = client
@@ -107,6 +108,12 @@ class Stream():
                 mdata, (), 'valid-replication-keys', [self.replication_key]
             )
 
+        if self.auto_select_fields:
+            # automatically include every property
+            mdata = metadata.write(
+                mdata, (), 'selected', True
+            )
+
         for field_name in schema['properties'].keys():
             if field_name in self.key_properties or \
                     field_name == self.replication_key:
@@ -124,13 +131,14 @@ class Stream():
                     'available'
                 )
 
-            # automatically include every property
-            # mdata = metadata.write(
-            #     mdata,
-            #     ('properties', field_name),
-            #     'selected',
-            #     True
-            # )
+            if self.auto_select_fields:
+                # automatically include every property
+                mdata = metadata.write(
+                    mdata,
+                    ('properties', field_name),
+                    'selected',
+                    True
+                )
 
         return metadata.to_list(mdata)
 
