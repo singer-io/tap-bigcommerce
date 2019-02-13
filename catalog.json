@@ -1166,7 +1166,8 @@
             "selected-by-default": true,
             "valid-replication-keys": [
               "date_modified"
-            ]
+            ],
+            "selected": true
           }
         },
         {
@@ -2664,7 +2665,8 @@
             "selected-by-default": true,
             "valid-replication-keys": [
               "date_modified"
-            ]
+            ],
+            "selected": true
           }
         },
         {
@@ -3535,7 +3537,8 @@
             "selected-by-default": true,
             "valid-replication-keys": [
               "id"
-            ]
+            ],
+            "selected": true
           }
         },
         {
@@ -3826,7 +3829,8 @@
             "selected-by-default": true,
             "valid-replication-keys": [
               "date_modified"
-            ]
+            ],
+            "selected": true
           }
         },
         {
