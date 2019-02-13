@@ -128,3 +128,4 @@ singer-check-tap-data
 state.json
 state.json.tmp
 catalog.json
+state.tmp.json
