@@ -20,10 +20,10 @@ $ pip3 install -e .
 
 This config is to authenticate into BigCommerce. Legacy API credentials not accepted.
 
-Orders stream requires _read_ permission on Orders
-Customers stream requires _read_ permission on Customers
-Products stream requires _read_ permission on Products
-Coupons stream requires _read_ permission on Marketing
+* Orders stream requires _read_ permission on Orders
+* Customers stream requires _read_ permission on Customers
+* Products stream requires _read_ permission on Products
+* Coupons stream requires _read_ permission on Marketing
 
 "start_date" is used for resources that can be filtered by date_modified - orders, customers and products
 
