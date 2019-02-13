@@ -2,9 +2,6 @@
   "type": "object",
   "name": "products",
   "properties": {
-    "id": {
-      "$ref": "type-integer.json"
-    },
     "name": {
       "$ref": "type-string.json"
     },
@@ -14,11 +11,20 @@
     "sku": {
       "$ref": "type-string.json"
     },
-    "search_keywords": {
+    "description": {
       "$ref": "type-string.json"
     },
-    "availability_description": {
-      "$ref": "type-string.json"
+    "weight": {
+      "$ref": "type-number.json"
+    },
+    "width": {
+      "$ref": "type-number.json"
+    },
+    "depth": {
+      "$ref": "type-number.json"
+    },
+    "height": {
+      "$ref": "type-number.json"
     },
     "price": {
       "$ref": "type-number.json"
@@ -35,8 +41,38 @@
     "calculated_price": {
       "$ref": "type-number.json"
     },
-    "sort_order": {
+    "map_price": {
+      "$ref": "type-number.json"
+    },
+    "tax_class_id": {
       "$ref": "type-integer.json"
+    },
+    "product_tax_code": {
+      "$ref": "type-string.json"
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "$ref": "type-integer.json"
+      }
+    },
+    "brand_id": {
+      "$ref": "type-integer.json"
+    },
+    "inventory_level": {
+      "$ref": "type-integer.json"
+    },
+    "inventory_warning_level": {
+      "$ref": "type-integer.json"
+    },
+    "inventory_tracking": {
+      "$ref": "type-string.json"
+    },
+    "fixed_cost_shipping_price": {
+      "$ref": "type-number.json"
+    },
+    "is_free_shipping": {
+      "$ref": "type-boolean.json"
     },
     "is_visible": {
       "$ref": "type-boolean.json"
@@ -50,40 +86,123 @@
         "$ref": "type-integer.json"
       }
     },
-    "inventory_level": {
-      "$ref": "type-integer.json"
-    },
-    "inventory_warning_level": {
-      "$ref": "type-integer.json"
-    },
     "warranty": {
       "$ref": "type-string.json"
     },
-    "weight": {
-      "$ref": "type-number.json"
-    },
-    "width": {
-      "$ref": "type-number.json"
-    },
-    "height": {
-      "$ref": "type-number.json"
-    },
-    "depth": {
-      "$ref": "type-number.json"
-    },
-    "fixed_cost_shipping_price": {
-      "$ref": "type-number.json"
-    },
-    "is_free_shipping": {
-      "$ref": "type-boolean.json"
-    },
-    "inventory_tracking": {
+    "bin_picking_number": {
       "$ref": "type-string.json"
     },
-    "rating_total": {
+    "layout_file": {
+      "$ref": "type-string.json"
+    },
+    "upc": {
+      "$ref": "type-string.json"
+    },
+    "search_keywords": {
+      "$ref": "type-string.json"
+    },
+    "availability": {
+      "$ref": "type-string.json"
+    },
+    "availability_description": {
+      "$ref": "type-string.json"
+    },
+    "gift_wrapping_options_type": {
+      "$ref": "type-string.json"
+    },
+    "gift_wrapping_options_list": {
+      "type": ["array", "null"],
+      "items": {
+        "$ref": "type-integer.json"
+      }
+    },
+    "sort_order": {
       "$ref": "type-integer.json"
     },
-    "rating_count": {
+    "condition": {
+      "$ref": "type-string.json"
+    },
+    "is_condition_shown": {
+      "$ref": "type-boolean.json"
+    },
+    "order_quantity_minimum": {
+      "$ref": "type-integer.json"
+    },
+    "order_quantity_maximum": {
+      "$ref": "type-integer.json"
+    },
+    "page_title": {
+      "$ref": "type-string.json"
+    },
+    "meta_keywords": {
+      "$ref": "type-string.json"
+    },
+    "meta_description": {
+      "$ref": "type-string.json"
+    },
+    "view_count": {
+      "$ref": "type-integer.json"
+    },
+    "preorder_release_date": {
+      "$ref": "type-string.json"
+    },
+    "preorder_message": {
+      "$ref": "type-string.json"
+    },
+    "is_preorder_only": {
+      "$ref": "type-boolean.json"
+    },
+    "is_price_hidden": {
+      "$ref": "type-boolean.json"
+    },
+    "price_hidden_label": {
+      "$ref": "type-string.json"
+    },
+    "custom_url": {
+      "type": ["object", "is_customized"],
+      "properties": {
+        "url": {
+          "$ref": "type-string.json"
+        },
+        "is_customized": {
+          "$ref": "type-boolean.json"
+        }
+      }
+    }, 
+    "open_graph_type": {
+      "$ref": "type-string.json"
+    },
+    "open_graph_title": {
+      "$ref": "type-string.json"
+    },
+    "open_graph_description": {
+      "$ref": "type-string.json"
+    },
+    "open_graph_use_meta_description": {
+      "$ref": "type-boolean.json"
+    },
+    "open_graph_use_product_name": {
+      "$ref": "type-boolean.json"
+    },
+    "open_graph_use_image": {
+      "$ref": "type-boolean.json"
+    },
+    "brand_name": {
+      "$ref": "type-string.json"
+    },
+    "gtin": {
+      "$ref": "type-string.json"
+    },
+    "mpn": {
+      "$ref": "type-string.json"
+    },
+    "id": {
+      "$ref": "type-integer.json"
+    },
+    "reviews_rating_sum": {
+      "$ref": "type-integer.json"
+    },
+    "reviews_count": {
       "$ref": "type-integer.json"
     },
     "total_sold": {
@@ -129,128 +248,187 @@
     "date_created": {
       "$ref": "type-datetime.json"
     },
-    "brand_id": {
-      "$ref": "type-integer.json"
-    },
-    "view_count": {
-      "$ref": "type-integer.json"
-    },
-    "page_title": {
-      "$ref": "type-string.json"
-    },
-    "meta_keywords": {
-      "$ref": "type-string.json"
-    },
-    "meta_description": {
-      "$ref": "type-string.json"
-    },
-    "layout_file": {
-      "$ref": "type-string.json"
-    },
-    "is_price_hidden": {
-      "$ref": "type-boolean.json"
-    },
-    "price_hidden_label": {
-      "$ref": "type-string.json"
-    },
-    "categories": {
-      "type": "array",
-      "items": {
-        "$ref": "type-integer.json"
-      }
-    },
     "date_modified": {
       "$ref": "type-datetime.json"
     },
-    "is_condition_shown": {
-      "$ref": "type-boolean.json"
+    "images": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "is_thumbnail": {
+            "$ref": "type-boolean.json"
+          },
+          "sort_order": {
+            "$ref": "type-integer.json"
+          },
+          "description": {
+            "$ref": "type-string.json"
+          },
+          "id": {
+            "$ref": "type-integer.json"
+          },
+          "product_id": {
+            "$ref": "type-integer.json"
+          },
+          "image_file": {
+            "$ref": "type-string.json"
+          },
+          "url_zoom": {
+            "$ref": "type-string.json"
+          },
+          "url_standard": {
+            "$ref": "type-string.json"
+          },
+          "url_thumbnail": {
+            "$ref": "type-string.json"
+          },
+          "url_tiny": {
+            "$ref": "type-string.json"
+          },
+          "date_modified": {
+            "$ref": "type-datetime.json"
+          }
+        }
+      }
     },
-    "preorder_release_date": {
-      "$ref": "type-string.json"
+    "videos": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "$ref": "type-string.json"
+          },
+          "description": {
+            "$ref": "type-string.json"
+          },
+          "sort_order": {
+            "$ref": "type-integer.json"
+          },
+          "type": {
+            "$ref": "type-string.json"
+          },
+          "id": {
+            "$ref": "type-integer.json"
+          },
+          "video_id": {
+            "$ref": "type-string.json"
+          },
+          "product_id": {
+            "$ref": "type-integer.json"
+          },
+          "length": {
+            "$ref": "type-string.json"
+          }
+        }
+      }
     },
-    "is_preorder_only": {
-      "$ref": "type-boolean.json"
+    "variants": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "cost_price": {
+            "$ref": "type-number.json"
+          },
+          "price": {
+            "$ref": "type-number.json"
+          },
+          "sale_price": {
+            "$ref": "type-number.json"
+          },
+          "map_price": {
+            "$ref": "type-number.json"
+          },
+          "weight": {
+            "$ref": "type-number.json"
+          },
+          "width": {
+            "$ref": "type-number.json"
+          },
+          "width": {
+            "$ref": "type-number.json"
+          },
+          "height": {
+            "$ref": "type-number.json"
+          },
+          "depth": {
+            "$ref": "type-number.json"
+          },
+          "is_free_shipping": {
+            "$ref": "type-boolean.json"
+          },
+          "fixed_cost_shipping_price": {
+            "$ref": "type-number.json"
+          },
+          "purchasing_disabled": {
+            "$ref": "type-boolean.json"
+          },
+          "purchasing_disabled_message": {
+            "$ref": "type-string.json"
+          },
+          "image_url": {
+            "$ref": "type-string.json"
+          },
+          "upc": {
+            "$ref": "type-string.json"
+          },
+          "inventory_level": {
+            "$ref": "type-integer.json"
+          },
+          "inventory_warning_level": {
+            "$ref": "type-integer.json"
+          },
+          "bin_picking_number": {
+            "$ref": "type-string.json"
+          },
+          "id": {
+            "$ref": "type-integer.json"
+          },
+          "product_id": {
+            "$ref": "type-integer.json"
+          },
+          "sku": {
+            "$ref": "type-string.json"
+          },
+          "sku_id": {
+            "$ref": "type-integer.json"
+          },
+          "option_values": {
+            "type": ["array", "null"],
+            "items": {
+              "type": "object",
+              "properties": {
+                "option_display_name": {
+                  "$ref": "type-string.json"
+                },
+                "label": {
+                  "$ref": "type-string.json"
+                },
+                "id": {
+                  "$ref": "type-integer.json"
+                },
+                "option_id": {
+                  "$ref": "type-integer.json"
+                }
+              }
+            }
+          },
+          "calculated_price": {
+            "$ref": "type-number.json"
+          }
+        }
+      }
     },
-    "preorder_message": {
-      "$ref": "type-string.json"
-    },
-    "order_quantity_minimum": {
+    "base_variant_id": {
       "$ref": "type-integer.json"
-    },
-    "order_quantity_maximum": {
-      "$ref": "type-integer.json"
-    },
-    "open_graph_type": {
-      "$ref": "type-string.json"
-    },
-    "open_graph_title": {
-      "$ref": "type-string.json"
-    },
-    "open_graph_description": {
-      "$ref": "type-string.json"
-    },
-    "is_open_graph_thumbnail": {
-      "$ref": "type-boolean.json"
-    },
-    "upc": {
-      "$ref": "type-string.json"
-    },
-    "avalara_product_tax_code": {
-      "$ref": "type-string.json"
-    },
-    "date_last_imported": {
-      "$ref": "type-datetime.json"
     },
     "option_set_id": {
       "$ref": "type-integer.json"
     },
-    "tax_class_id": {
-      "$ref": "type-integer.json"
-    },
     "option_set_display": {
       "$ref": "type-string.json"
-    },
-    "bin_picking_number": {
-      "$ref": "type-string.json"
-    },
-    "custom_url": {
-      "$ref": "type-string.json"
-    },  
-    "availability": {
-      "$ref": "type-string.json"
-    },
-    "brand": {
-      "type": "object",
-      "properties": {
-        "url": {
-          "$ref": "type-string.json"
-        },
-        "resource": {
-          "$ref": "type-string.json"
-        }
-      }
-    },
-    "downloads": {
-      "type": "object",
-      "properties": {
-        "url": {
-          "$ref": "type-string.json"
-        },
-        "resource": {
-          "$ref": "type-string.json"
-        }
-      }
-    },
-    "tax_class": {
-      "type": "object",
-      "properties": {
-        "url": {
-          "$ref": "type-string.json"
-        },
-        "resource": {
-          "$ref": "type-string.json"
-        }
-      }
     }
   }
 }

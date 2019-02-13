@@ -17,6 +17,9 @@
     "email": {
       "$ref": "type-string.json"
     },
+    "phone": {
+      "$ref": "type-string.json"
+    },
     "date_created": {
       "$ref": "type-datetime.json"
     },
@@ -39,6 +42,23 @@
       "$ref": "type-string.json"
     },
     "accepts_marketing": {
+      "$ref": "type-boolean.json"
+    },
+    "form_fields": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "type-string.json"
+          },
+          "value": {
+            "$ref": "type-string.json"
+          }
+        }
+      }
+    },
+    "reset_pass_on_login": {
       "$ref": "type-boolean.json"
     }
   }

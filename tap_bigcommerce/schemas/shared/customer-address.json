@@ -1,0 +1,64 @@
+{
+  "type": ["array", "null"],
+    "items": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "type-integer.json"
+        },
+        "customer_id": {
+          "$ref": "type-integer.json"
+        },
+        "first_name": {
+          "$ref": "type-string.json"
+        },
+        "last_name": {
+          "$ref": "type-string.json"
+        },
+        "company": {
+          "$ref": "type-string.json"
+        },
+        "street_1": {
+          "$ref": "type-string.json"
+        },
+        "street_2": {
+          "$ref": "type-string.json"
+        },
+        "city": {
+          "$ref": "type-string.json"
+        },
+        "state": {
+          "$ref": "type-string.json"
+        },
+        "zip": {
+          "$ref": "type-string.json"
+        },
+        "country": {
+          "$ref": "type-string.json"
+        },
+        "country_iso2": {
+          "$ref": "type-string.json"
+        },
+        "phone": {
+          "$ref": "type-string.json"
+        },
+        "address_type": {
+          "$ref": "type-string.json"
+        },
+        "form_fields": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "$ref": "type-string.json"
+              },
+              "value": {
+                "$ref": "type-string.json"
+              }
+            }
+          }
+        }
+      }
+    }
+}
