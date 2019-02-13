@@ -6,7 +6,6 @@ from singer import Transformer
 
 logger = singer.get_logger().getChild('tap-bigcommerce')
 
-
 def sync_stream(state, instance):
     stream = instance.stream
 
