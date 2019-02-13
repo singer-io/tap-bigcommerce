@@ -43,7 +43,8 @@ def populate_class_schemas(catalog, selected_stream_names):
 
 
 def ensure_credentials_are_authorized(client):
-    client.is_authorized()
+    if client.is_authorized() is False:
+        raise Exception("BigCommerce Client not authorized.")
 
 
 def do_sync(client, catalog, state, start_date):
@@ -99,6 +100,8 @@ def main():
     # Parse command line arguments
     args = utils.parse_args(REQUIRED_CONFIG_KEYS)
     config = args.config
+
+    # create instance of BigCommerce client
     bc = BigCommerce(
         client_id=config['client_id'],
         access_token=config['access_token'],
