@@ -1,16 +1,10 @@
 from functools import wraps
 
-import json
-import bigcommerce
 import singer
 from datetime import datetime
 from dateutil.parser import parse
 
-# Exception classes
-from requests.packages.urllib3.exceptions import ReadTimeoutError
-from requests.exceptions import ConnectionError
-from bigcommerce.exception import ClientRequestException
-
+from tap_bigcommerce.bigcommerce import Bigcommerce
 
 logger = singer.get_logger().getChild('tap-bigcommerce')
 
@@ -20,7 +14,7 @@ def validate(method):
     @wraps(method)
     def _validate(*args, **kwargs):
         if 'replication_key' in kwargs and \
-                kwargs['replication_key'] != 'date_modified':
+                kwargs['replication_key'] not in ['date_modified', 'id']:
                 raise Exception("Client Error - invalid replication_key")
 
         if 'bookmark' in kwargs and \
@@ -35,6 +29,9 @@ def validate(method):
 
 
 def parse_date_string_arguments(fields):
+    """
+    Transforms specified input datetime arguments into a datetime object
+    """
 
     if type(fields) is not list:
         fields = [fields]
@@ -42,11 +39,12 @@ def parse_date_string_arguments(fields):
     def decorator(method):
         @wraps(method)
         def parse_dt(*args, **kwargs):
-            logger.debug(kwargs)
             for key, value in kwargs.items():
                 if key in fields:
                     if type(value) != str:
-                        raise Exception("parse_date_string_arguments expects string value.")
+                        raise Exception(
+                            "parse_date_string_arguments expects string value."
+                        )
                     kwargs[key] = parse(value)
             return method(*args, **kwargs)
         return parse_dt
@@ -64,10 +62,6 @@ class Client():
 
 class BigCommerce(Client):
 
-    api_version = 2
-
-    sort_order = 'asc'
-
     def __init__(self, client_id, access_token, store_hash):
         self.client_id = client_id
         self.access_token = access_token
@@ -77,75 +71,49 @@ class BigCommerce(Client):
 
     def _reset_session(self):
         try:
-            self.api = bigcommerce.api.BigcommerceApi(
+            self.api = Bigcommerce(
                 client_id=self.client_id,
                 store_hash=self.store_hash,
-                access_token=self.access_token,
-                rate_limiting_management={
-                    'min_requests_remaining': 2,
-                    'wait': True,
-                    'callback_function': None
-                }
+                access_token=self.access_token
             )
             self.authorized = True
         except Exception as e:
             self.authorized = False
             raise e
 
-    def prepare(self, obj, default=None):
-        if obj is None:
-            return default
-        if type(obj) == list:
-            return [self.prepare(o, default) for o in obj]
-        else:
-            return {
-                k: v for k, v in obj.items() if k != '_connection'
-            }
-
-    # @singer.utils.backoff(
-    #     (ClientRequestException,
-    #      ConnectionError,
-    #      ClientRequestException,
-    #      ReadTimeoutError)
-    # )
     @parse_date_string_arguments('bookmark')
     @validate
     def orders(self, replication_key, bookmark):
 
-        order_invalid_fields = ['credit_card_type']
-        products_invalid_fields = ['configurable_fields', 'fulfillment_source']
-
-        for order in self.api.Orders.iterall(
-            min_date_modified=bookmark.isoformat(),
-            sort='date_modified:'+self.sort_order
-        ):
-            obj = {k: v for k, v in self.prepare(order).items() if k not in order_invalid_fields}
-            obj['products'] = [{k: v for k, v in p.items() if k not in products_invalid_fields} for p in self.prepare(order.products(), [])]
-            obj['coupons'] = self.prepare(order.coupons(), None)
-            if obj['coupons'] == {}:
-                obj['coupons'] = None
-            yield obj
-            #logger.debug(json.dumps(obj, indent=2))
+        for order in self.api.resource('orders', {
+            'min_date_modified': bookmark.isoformat(),
+            'sort': 'date_modified:asc'
+        }):
+            yield order
 
     @parse_date_string_arguments('bookmark')
     @validate
     def products(self, replication_key, bookmark):
 
-        for product in self.api. 
-        Products.iterall(
-            date_modified=bookmark.isoformat(),
-            sort='date_modified',
-            direction=self.sort_order
-        ):
-            yield self.prepare(product)
+        for product in self.api.resource('products', {
+            'date_modified:min': bookmark.isoformat(),
+            'sort': 'date_modified',
+            'direction': 'asc'
+        }):
+            yield product
 
     @parse_date_string_arguments('bookmark')
     @validate
     def customers(self, replication_key, bookmark):
 
-        for customer in self.api.Customers.iterall(
-            min_date_modified=bookmark.isoformat(),
-            sort='date_modified',
-            direction=self.sort_order
-        ):
-            yield self.prepare(customer)
+        for customer in self.api.resource('customers', {
+            'min_date_modified': bookmark.isoformat(),
+        }):
+            yield customer
+
+    def coupons(self, replication_key, bookmark):
+
+        for customer in self.api.resource('coupons', {
+            'min_id': bookmark,
+        }):
+            yield customer
