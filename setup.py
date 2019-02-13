@@ -10,8 +10,8 @@ setup(
     classifiers=["Programming Language :: Python :: 3 :: Only"],
     py_modules=["tap_bigcommerce"],
     install_requires=[
-        "singer-python>=5.0.12",
-        "bigcommerce>=0.20.1",
+        "singer-python==5.0.12",
+        "requests==2.21.0"
     ],
     entry_points="""
     [console_scripts]
