@@ -1,3 +1,39 @@
+"""
+API wrapper for BigCommerce library.
+
+Existing Python library for BigCommerce only supports version 2 of
+the API. Some endpoints and filters are only available in version 3
+of the API.
+
+BigCommerce class gives a basic wrapper around the 4 required resources:
+orders, products, customers and coupons.
+
+Rate-Limiting
+
+BigCommerce provides rate limiting information in their responses. This
+wrapper limits requests by pausing after a request is made for a period
+determinded by taking the number of milliseconds left in the window and
+dividing by the number of requests left in the window. The idea being
+to maintain the maximum constant rate of requests rather than using all
+requests up and then waiting until the window resets.
+
+This may need to change however once we introduce asyncronous nested
+resource fetching.
+
+@TODO Asyncronous Nested Resource Requests
+
+Standard resources request 50 results per request. However, each result
+contains a number of nested resources (Orders, for example, has OrderProducts,
+OrderCoupons and ShippingAddress resources).
+
+This creates a problem of extremely slow throughput, because each primary
+resource result page will generate a mininum of 150 requests - all executed
+syncronously, delaying iteration through the primary resource.
+
+
+"""
+
+
 import requests
 import urllib
 from singer.utils import strptime_to_utc, strftime
