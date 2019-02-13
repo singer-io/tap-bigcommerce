@@ -121,7 +121,12 @@ class Bigcommerce():
             return r.json()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(
+                "BigCommerce client error. {} - retriying {}".format(
+                    e,
+                    self.retries + 1
+                )
+            )
 
             self.retries += 1
 
