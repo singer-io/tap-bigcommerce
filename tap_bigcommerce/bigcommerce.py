@@ -268,7 +268,7 @@ class Bigcommerce():
         if sub_resources > 0:
             self.results_per_page = min(
                 self.results_per_page,
-                (self.rate_limit['requests_quota'] / sub_resources) - 5
+                math.floor(self.rate_limit['requests_quota'] / sub_resources) - 5
             )
 
         requests_need = self.results_per_page * sub_resources
