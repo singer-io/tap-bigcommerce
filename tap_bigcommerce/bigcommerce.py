@@ -31,22 +31,59 @@ resource result page will generate a mininum of 150 requests - all executed
 syncronously, delaying iteration through the primary resource.
 
 
+------- Solution Design -------
+
+
+Requirements:
+
+Respect API rate limit.
+
+
+Concept A:
+
+Primary resources run in the primary thread, but for each page of results,
+request the nested resources asyncrounously, but wait for those nested results
+to complete before paginating on the primary resource.
+
+* Can a syncrounous method be called f
+
+
+Concept B:
+
+BigCommerce's API doesn't have a limit on the number of concurrent requests,
+instead it uses a window-based rate limit.
+
+If the number of nested requests can be predicted, could the primary thread/
+resource wait until there are sufficient requests available for all nested
+requests to be executed in one go. Then requests-futures can be used to get
+all results. 
+
+Recurively run through each property to get the nested resources.
+
+
 """
 
-
-import requests
+import requests.exceptions 
+from concurrent.futures import Future
+from requests_futures.sessions import FuturesSession
 import urllib
 from singer.utils import strptime_to_utc, strftime
 from singer import get_logger
 import time
 import math
 
+from functools import partial
+
 logger = get_logger().getChild('tap-bigcommerce')
 
 
 class Bigcommerce():
 
+    auth_check_url = "https://api.bigcommerce.com/store"
+
     base_url = "https://api.bigcommerce.com/stores/"
+
+    results_per_page = 50
 
     max_retries = 5
 
@@ -65,6 +102,7 @@ class Bigcommerce():
                 'date_created',
                 'date_shipped'
             ],
+            'sub_resources': 3,
             # deprecated or non-functioning fields
             'exclude_paths': [
                 ('credit_card_type',),
@@ -80,6 +118,7 @@ class Bigcommerce():
                 'date_modified',
                 'date_created'
             ],
+            'sub_resources': 1,
             'exclude_paths': [
                 ('addresses',)
             ]
@@ -98,6 +137,13 @@ class Bigcommerce():
         }
     }
 
+    rate_limit = {
+        "ms_until_reset": None,
+        "window_size_ms": None,
+        "requests_remaining": None,
+        "requests_quota": None
+    }
+
     def __init__(self, client_id, access_token, store_hash):
 
         self.retries = 0
@@ -106,7 +152,9 @@ class Bigcommerce():
         self.access_token = access_token
         self.store_hash = store_hash
 
-        self.session = requests.Session()
+        self.session = FuturesSession()
+
+        self.session.hooks['response'] = self._response_hook
 
         self.headers = {
             'accept': "application/json",
@@ -117,10 +165,40 @@ class Bigcommerce():
 
         self.base_url = self.base_url + self.store_hash + '/v{version}'
 
+        # auth check and get rate limit window
+        self.get(self.make_url(2)('time'), resolve=True)
+
+    def _response_hook(self, resp, *args, **kwargs):
+        if 'X-Rate-Limit-Time-Reset-Ms' in resp.headers:
+            self.update_rate_limit(resp.headers)
+
+        if resp.status_code != 200:
+            if resp.status_code == 204:
+                resp.data = None
+            else:
+                raise requests.exceptions.HTTPError(resp)
+        else:
+            resp.data = resp.json()
+
+    def update_rate_limit(self, headers):
+        print(headers)
+        ref = {
+            'ms_until_reset': 'X-Rate-Limit-Time-Reset-Ms',
+            'window_size_ms': 'X-Rate-Limit-Time-Window-Ms',
+            'requests_remaining': 'X-Rate-Limit-Requests-Left',
+            'requests_quota': 'X-Rate-Limit-Requests-Quota'
+        }
+
+        for key, header in ref.items():
+            _temp = int(headers[header])
+            if self.rate_limit[key] is None:
+                self.rate_limit[key] = _temp
+            elif self.rate_limit[key] > _temp:
+                self.rate_limit[key] = _temp
+
     def make_url(self, version=2):
 
         def build(*res):
-            # print(self.base_url.format(version=version))
             url = self.base_url.format(version=version)
             for r in res:
                 url = '{}/{}'.format(url, r)
@@ -128,53 +206,15 @@ class Bigcommerce():
 
         return build
 
-    def get(self, url, params):
+    def get(self, url, params={}, resolve=False):
+        future = self.session.get(url, params=params, headers=self.headers)
 
-        try:
+        if resolve:
+            return future.result()
+        else:
+            return future
 
-            r = self.session.get(url, params=params, headers=self.headers)
 
-            if r.status_code != 200:
-                if r.status_code == 204:
-                    return None
-                else:
-                    raise requests.exceptions.HTTPError(
-                        "HTTP {}: {}, {}".format(r.status_code, url, r.text)
-                    )
-
-            if 'X-Rate-Limit-Time-Reset-Ms' in r.headers:
-                ms_until_reset = int(r.headers['X-Rate-Limit-Time-Reset-Ms'])
-                requests_remaining = int(
-                    r.headers['X-Rate-Limit-Requests-Left'])
-
-                # sleep based on requests left within window remaining
-                sleep_sec = round(
-                    math.ceil(ms_until_reset / requests_remaining) / 1000,
-                    14
-                )
-                time.sleep(sleep_sec)
-
-            return r.json()
-
-        except Exception as e:
-            logger.error(
-                "BigCommerce client error. {} - retriying {}".format(
-                    e,
-                    self.retries + 1
-                )
-            )
-
-            self.retries += 1
-
-            if self.retries > self.max_retries:
-                logger.error("Max retries reached. Raising Critical Error")
-                raise(e)
-
-            if self.last_retry is None:
-                self.last_retry = time.time()
-            else:
-                if time.time() - self.last_retry > self.retry_window:
-                    self.retries = 0
 
     def resource(self, name, params={}):
         resource = self.endpoints.get(name, {})
@@ -208,16 +248,105 @@ class Bigcommerce():
             else:
                 return row
 
+        def resolve_resources(row, parent_key=()):
+            if type(row) == Future:
+                r = row.result()
+                return r.data
+            if type(row) == dict:
+                obj = {}
+                for key, value in row.items():
+                    path = parent_key + (key,)
+                    obj[key] = resolve_resources(value, path)
+                return obj
+            elif type(row) == list:
+                return [resolve_resources(el, parent_key) for el in row]
+            else:
+                return row
+
+        sub_resources = resource.get('sub_resources', 0)
+
+        if sub_resources > 0:
+            self.results_per_page = min(
+                self.results_per_page,
+                (self.rate_limit['requests_quota'] / sub_resources) - 5
+            )
+
+        requests_need = self.results_per_page * sub_resources
+
+        print("results per page: {}".format(self.results_per_page))
+
         page = 0
         while True:
             page += 1
-            resp = self.get(url, {
+            print("page {}".format(page))
+            r = self.get(url, {
                 **params,
-                **{'page': page}
-            })
+                **{
+                    'page': page,
+                    'limit': self.results_per_page
+                }
+            }).result()
+
+            if self.rate_limit['requests_remaining'] is not None:
+                print("{} requests remaining".format(self.rate_limit['requests_remaining'] - requests_need))
+                if (self.rate_limit['requests_remaining'] - requests_need) < 1:
+                    sec = self.rate_limit['ms_until_reset'] / 1000
+                    print("Rate limit exhausted. Waiting {:.2f} seconds".format(sec))
+                    time.sleep(sec)
+
+            resp = r.data
+
             data = resp if version == 2 else resp.get('data', [])
+
             for row in data \
                     if version == 2 else resp.get('data', []):
-                yield unpack_resources(row)
-            if len(data) < 50:
+                yield resolve_resources(unpack_resources(row))
+            if len(data) < self.results_per_page:
                 break
+
+            #break
+    # def resource(self, name, params={}):
+    #     resource = self.endpoints.get(name, {})
+    #     version = resource.get('version', 3)
+    #     path = resource.get('path', name)
+    #     transform_date_fields = resource.get('transform_date_fields', [])
+    #     exclude_paths = resource.get('exclude_paths', [])
+    #     url = self.make_url(version)(path)
+
+    #     # recursively unpack nested resources
+    #     # watch for recursion depth - but most APIs only go 2/3 levels deep
+    #     def unpack_resources(row, parent_key=()):
+    #         if type(row) == dict:
+    #             obj = {}
+    #             for key, value in row.items():
+    #                 path = parent_key + (key,)
+    #                 if path in exclude_paths:
+    #                     continue
+    #                 # exclude_paths
+    #                 if type(value) == dict and 'resource' in value:
+    #                     value = self.get(value['url'], {})
+    #                 if key in transform_date_fields:
+    #                     try:
+    #                         value = strftime(strptime_to_utc(value))
+    #                     except Exception as e:
+    #                         pass
+    #                 obj[key] = unpack_resources(value, path)
+    #             return obj
+    #         elif type(row) == list:
+    #             return [unpack_resources(el, parent_key) for el in row]
+    #         else:
+    #             return row
+
+    #     page = 0
+    #     while True:
+    #         page += 1
+    #         resp = self.get(url, {
+    #             **params,
+    #             **{'page': page}
+    #         })
+    #         data = resp if version == 2 else resp.get('data', [])
+    #         for row in data \
+    #                 if version == 2 else resp.get('data', []):
+    #             yield unpack_resources(row)
+    #         if len(data) < 50:
+    #             break
