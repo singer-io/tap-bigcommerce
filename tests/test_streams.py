@@ -1,6 +1,6 @@
 import unittest
 
-from tap_bigcommerce.streams import Stream
+from tap_bigcommerce.streams import Stream, STREAMS
 from tap_bigcommerce.client import Client
 
 from datetime import datetime, timedelta
@@ -41,7 +41,7 @@ class TestStreams(unittest.TestCase):
             Stream.is_bookmark_old(
                 self=stream,
                 value=today.strftime(BIGCOMMERCE_OLD_DATE_FORMAT),
-                old_date.strftime(BIGCOMMERCE_OLD_DATE_FORMAT)
+                bookmark=old_date.strftime(BIGCOMMERCE_OLD_DATE_FORMAT)
             )
         )
 
@@ -60,6 +60,14 @@ class TestStreams(unittest.TestCase):
                 bookmark=old_date.strftime(BIGCOMMERCE_NEW_DATE_FORMAT)
             )
         )
+
+    def test_load_metadata(self):
+
+        client = MockClient
+
+        orders = STREAMS['orders'](client)
+        # print(orders.load_schema())
+        # print(orders.load_metadata())
 
 
 
