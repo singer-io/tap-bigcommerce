@@ -159,7 +159,7 @@
       "$ref": "type-string.json"
     },
     "custom_url": {
-      "type": ["object", "is_customized"],
+      "type": ["object", "null"],
       "properties": {
         "url": {
           "$ref": "type-string.json"

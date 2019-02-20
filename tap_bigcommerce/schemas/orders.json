@@ -213,11 +213,13 @@
           ],
           "items": {
             "type": "object",
-            "name": {
-              "$ref": "type-string.json"
-            },
-            "value": {
-              "$ref": "type-string.json"
+            "properties": {
+              "name": {
+                "$ref": "type-string.json"
+              },
+              "value": {
+                "$ref": "type-string.json"
+              }
             }
           }
         }
