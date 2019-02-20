@@ -2,5 +2,6 @@
   "client_id": "",
   "access_token": "",
   "store_hash": "",
-  "start_date": "2017-01-01T00:00:00Z"
+  "start_date": "2017-01-01T00:00:00Z",
+  "full_table_replication_max_hours": 24
 }
