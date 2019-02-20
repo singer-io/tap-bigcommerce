@@ -111,9 +111,7 @@ class BigCommerce(Client):
         }):
             yield customer
 
-    def coupons(self, replication_key, bookmark):
+    def coupons(self):
 
-        for customer in self.api.resource('coupons', {
-            'min_id': bookmark,
-        }):
-            yield customer
+        for coupon in self.api.resource('coupons'):
+            yield coupon

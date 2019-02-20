@@ -47,7 +47,7 @@ def ensure_credentials_are_authorized(client):
         raise Exception("BigCommerce Client not authorized.")
 
 
-def do_sync(client, catalog, state, start_date):
+def do_sync(client, catalog, state, start_date, full_table_max_hours):
     ensure_credentials_are_authorized(client)
     selected_stream_names = get_selected_streams(catalog)
     populate_class_schemas(catalog, selected_stream_names)
@@ -122,7 +122,8 @@ def main():
             client=bc,
             catalog=catalog,
             state=args.state,
-            start_date=config['start_date']
+            start_date=config['start_date'],
+            full_table_max_hours=config['full_table_replication_max_hours']
         )
 
 

@@ -20,7 +20,7 @@ requests up and then waiting until the window resets.
 This may need to change however once we introduce asyncronous nested
 resource fetching.
 
-@TODO Asyncronous Nested Resource Requests
+Asyncronous Nested Resource Requests
 
 Standard resources request 50 results per request. However, each result
 contains a number of nested resources (Orders, for example, has OrderProducts,
@@ -30,40 +30,34 @@ This creates a problem of extremely slow throughput, because each primary
 resource result page will generate a mininum of 150 requests - all executed
 syncronously, delaying iteration through the primary resource.
 
+To solve this, sub-resources are requested asyncronously using
+requests-futures. A page of results is requested syncronously from the API,
+then all of the nested resources for that page of results are requested at
+once. Then, in a final loop, the nested resource result is resolved.
 
-------- Solution Design -------
+In testing, this created a 10-fold increase in speed.
 
+API Rate Limit:
 
-Requirements:
+In order to accomodate rate limit restrictions for asyncrounous requests,
+at the start of a resource request, the number of requests that will be
+needed for the entire page or results is calculated. That number is then
+compared to the `X-Rate-Limit-Requests-Left` header. If not enough requests
+are available, the script will wait until the next window.
 
-Respect API rate limit.
-
-
-Concept A:
-
-Primary resources run in the primary thread, but for each page of results,
-request the nested resources asyncrounously, but wait for those nested results
-to complete before paginating on the primary resource.
-
-* Can a syncrounous method be called f
-
-
-Concept B:
-
-BigCommerce's API doesn't have a limit on the number of concurrent requests,
-instead it uses a window-based rate limit.
-
-If the number of nested requests can be predicted, could the primary thread/
-resource wait until there are sufficient requests available for all nested
-requests to be executed in one go. Then requests-futures can be used to get
-all results. 
-
-Recurively run through each property to get the nested resources.
-
+For BigCommerce enterprise plans, the API rate limit is very higher than
+the possible throughput of this script. However for low cost plans, the
+rate limit is very low (150 requests per 30 seconds), which means that many
+resources couldn't be extracted within a single window. To accomodate this,
+the initial authorization request checks the rate limit window quota, and
+compares this to the number of requests needed. If more requests are required
+than are available, the results_per_page number is lowered to a point that will
+allow an entire page of results to be processed within one window.
 
 """
 
 import requests.exceptions 
+from functools import partial
 from concurrent.futures import Future
 from requests_futures.sessions import FuturesSession
 import urllib
@@ -75,6 +69,99 @@ import math
 from functools import partial
 
 logger = get_logger().getChild('tap-bigcommerce')
+
+
+def filter_excluded_paths(obj, exclude_paths=[]):
+    """
+    Recurisvely traverse an object and remove fields
+    if they match a tuple path (parent, child) provided
+    in the list of exclude_paths
+    """
+    def _filter(o, parent_key=()):
+        if type(o) == dict:
+            obj = {}
+            for key, value in o.items():
+                path = parent_key + (key,)
+                if path not in exclude_paths:
+                    obj[key] = _filter(value, path)
+            return obj
+        elif type(o) == list:
+            return [_filter(el, parent_key) for el in o]
+        else:
+            return o
+
+    return _filter(obj)
+
+
+def transform_dates(obj, date_fields=[]):
+    """
+    Transform dates if the field key is in the provided
+    list of fields `date_fields`
+    """
+    def _transform(o):
+        if type(o) == dict:
+            obj = {}
+            for key, value in o.items():
+                if (key in date_fields) and (value not in (None, "")):
+                    try:
+                        value = strftime(strptime_to_utc(value))
+                    except Exception as e:
+                        pass
+                obj[key] = _transform(value)
+            return obj
+        elif type(o) == list:
+            return [_transform(el) for el in o]
+        else:
+            return o
+
+    return _transform(obj)
+
+
+def unpack_nested_resources(get, exclude_fields=[], asyncronous=True):
+    """
+    Returns a function that will recursively "unpack" an object
+    for nested resources by making an asyncrounous request (if
+    asyncronous is True). Value of the field will be a Future.
+    """
+
+    def unpack(row, parent_key=()):
+        if type(row) == dict:
+            obj = {}
+            for key, value in row.items():
+                path = parent_key + (key,)
+                if path not in exclude_fields:
+                    if type(value) == dict and 'resource' in value:
+                        value = get(value['url'], {})
+                        if asyncronous is False:
+                            value = value.result().data
+                    obj[key] = unpack(value, path)
+            return obj
+        elif type(row) == list:
+            return [unpack(el, parent_key) for el in row]
+        else:
+            return row
+
+    return unpack
+
+
+def resolve_resources(row, parent_key=()):
+    """
+    Recurisvely traverse object and Resolve any field values
+    that are Futures.
+    """
+    if type(row) == Future:
+        r = row.result()
+        return r.data
+    if type(row) == dict:
+        obj = {}
+        for key, value in row.items():
+            path = parent_key + (key,)
+            obj[key] = resolve_resources(value, path)
+        return obj
+    elif type(row) == list:
+        return [resolve_resources(el, parent_key) for el in row]
+    else:
+        return row
 
 
 class Bigcommerce():
@@ -106,9 +193,9 @@ class Bigcommerce():
             # deprecated or non-functioning fields
             'exclude_paths': [
                 ('credit_card_type',),
-                ('shipping_addresses', 'shipping_quotes'),
                 ('products', 'configurable_fields'),
-                ('products', 'fulfillment_source')
+                ('products', 'fulfillment_source'),
+                ('shipping_addresses', 'shipping_quotes')
             ]
         },
         'customers': {
@@ -152,6 +239,19 @@ class Bigcommerce():
         self.access_token = access_token
         self.store_hash = store_hash
 
+        self.base_url = self.base_url + self.store_hash + '/v{version}'
+
+        self._reset_session()
+
+    def _reset_session(self):
+        """
+        Sets the self.session object to a new FutureSession
+        instance and sets default headers and responce hook.
+
+        Called when class instantiated as well as if there is
+        an API error and the session needs to be reset.
+        """
+        self.request_count = 0
         self.session = FuturesSession()
 
         self.session.hooks['response'] = self._response_hook
@@ -163,14 +263,13 @@ class Bigcommerce():
             'x-auth-token': self.access_token
         }
 
-        self.base_url = self.base_url + self.store_hash + '/v{version}'
-
         # auth check and get rate limit window
-        self.get(self.make_url(2)('time'), resolve=True)
+        self.get(self.make_url(2, 'time'), resolve=True)
 
     def _response_hook(self, resp, *args, **kwargs):
+        self.request_count += 1
         if 'X-Rate-Limit-Time-Reset-Ms' in resp.headers:
-            self.update_rate_limit(resp.headers)
+            self.rate_limit = self._update_rate_limit(resp.headers)
 
         if resp.status_code != 200:
             if resp.status_code == 204:
@@ -180,33 +279,47 @@ class Bigcommerce():
         else:
             resp.data = resp.json()
 
-    def update_rate_limit(self, headers):
-        print(headers)
+    def _update_rate_limit(self, headers):
+        """
+        Parse header object and return a clean dictionary
+        of integer values.
+        """
         ref = {
             'ms_until_reset': 'X-Rate-Limit-Time-Reset-Ms',
             'window_size_ms': 'X-Rate-Limit-Time-Window-Ms',
             'requests_remaining': 'X-Rate-Limit-Requests-Left',
             'requests_quota': 'X-Rate-Limit-Requests-Quota'
         }
-
+        rate_limit = {}
         for key, header in ref.items():
-            _temp = int(headers[header])
-            if self.rate_limit[key] is None:
-                self.rate_limit[key] = _temp
-            elif self.rate_limit[key] > _temp:
-                self.rate_limit[key] = _temp
+            rate_limit[key] = int(headers[header])
+        return rate_limit
 
-    def make_url(self, version=2):
-
-        def build(*res):
-            url = self.base_url.format(version=version)
-            for r in res:
-                url = '{}/{}'.format(url, r)
-            return url
-
-        return build
+    def make_url(self, version=2, *res):
+        """
+        Make a valid URL based on the API version and paths provided
+        """
+        url = self.base_url.format(version=version)
+        for r in res:
+            url = '{}/{}'.format(url, r)
+        return url
 
     def get(self, url, params={}, resolve=False):
+        """
+        Make a get request.
+
+        Args:
+            url (str): full URL to request
+            params (dict): dict of key values for request parameters
+            resolve (bool): if True, resolve future before returning
+                            (making method blocking), otherwise
+                            return Future
+
+        Returns:
+            requests.Response
+            OR
+            concurrent.futures.Future
+        """
         future = self.session.get(url, params=params, headers=self.headers)
 
         if resolve:
@@ -214,139 +327,78 @@ class Bigcommerce():
         else:
             return future
 
-
-
-    def resource(self, name, params={}):
+    def resource(self, name, params={}, async_sub_resources=True):
+        logger.info((name, params))
         resource = self.endpoints.get(name, {})
         version = resource.get('version', 3)
         path = resource.get('path', name)
-        transform_date_fields = resource.get('transform_date_fields', [])
+        date_fields = resource.get('transform_date_fields', [])
         exclude_paths = resource.get('exclude_paths', [])
-        url = self.make_url(version)(path)
+        url = self.make_url(version, path)
 
-        # recursively unpack nested resources
-        # watch for recursion depth - but most APIs only go 2/3 levels deep
-        def unpack_resources(row, parent_key=()):
-            if type(row) == dict:
-                obj = {}
-                for key, value in row.items():
-                    path = parent_key + (key,)
-                    if path in exclude_paths:
-                        continue
-                    # exclude_paths
-                    if type(value) == dict and 'resource' in value:
-                        value = self.get(value['url'], {})
-                    if key in transform_date_fields:
-                        try:
-                            value = strftime(strptime_to_utc(value))
-                        except Exception as e:
-                            pass
-                    obj[key] = unpack_resources(value, path)
-                return obj
-            elif type(row) == list:
-                return [unpack_resources(el, parent_key) for el in row]
-            else:
-                return row
-
-        def resolve_resources(row, parent_key=()):
-            if type(row) == Future:
-                r = row.result()
-                return r.data
-            if type(row) == dict:
-                obj = {}
-                for key, value in row.items():
-                    path = parent_key + (key,)
-                    obj[key] = resolve_resources(value, path)
-                return obj
-            elif type(row) == list:
-                return [resolve_resources(el, parent_key) for el in row]
-            else:
-                return row
+        unpack_resources = unpack_nested_resources(
+            self.get,
+            exclude_paths,
+            async_sub_resources
+        )
 
         sub_resources = resource.get('sub_resources', 0)
 
         if sub_resources > 0:
             self.results_per_page = min(
                 self.results_per_page,
-                math.floor(self.rate_limit['requests_quota'] / sub_resources) - 5
+                math.floor(
+                    self.rate_limit['requests_quota'] / sub_resources
+                ) - 5
             )
 
         requests_need = self.results_per_page * sub_resources
 
-        print("results per page: {}".format(self.results_per_page))
-
         page = 0
         while True:
+            error_count = 0
             page += 1
-            print("page {}".format(page))
-            r = self.get(url, {
-                **params,
-                **{
-                    'page': page,
-                    'limit': self.results_per_page
-                }
-            }).result()
+            logger.info("{}, page {}".format(name, page))
+            params = {**params, **{
+                'page': page,
+                'limit': self.results_per_page
+            }}
+
+            r = self.get(url, params).result()
 
             if self.rate_limit['requests_remaining'] is not None:
-                print("{} requests remaining".format(self.rate_limit['requests_remaining'] - requests_need))
                 if (self.rate_limit['requests_remaining'] - requests_need) < 1:
                     sec = self.rate_limit['ms_until_reset'] / 1000
-                    print("Rate limit exhausted. Waiting {:.2f} seconds".format(sec))
+                    logger.warning(
+                        "Rate limit exhausted. Waiting {:.2f} sec".format(sec)
+                    )
+                    self.request_count = 0
                     time.sleep(sec)
 
-            resp = r.data
+            data = r.data if version == 2 else r.data.get('data', [])
 
-            data = resp if version == 2 else resp.get('data', [])
+            # unpack nested resources for entire page of results
+            data = unpack_resources(data)
 
-            for row in data \
-                    if version == 2 else resp.get('data', []):
-                yield resolve_resources(unpack_resources(row))
+            try:
+                for row in data:
+                    yield transform_dates(
+                        filter_excluded_paths(
+                            resolve_resources(row),
+                            exclude_paths),
+                        date_fields)
+            except Exception as e:
+                error_count += 1
+                logger.warning(
+                    "Error {} occurred. Sleeping for 10 seconds.".format(e)
+                )
+                time.sleep(10)
+                # max 4 errors in any single page of results
+                if error_count > 3:
+                    logger.error("{} errors, ending".format(error_count))
+                    raise e
+
+            # assume results page with fewer values than `results_per_page` =
+            # no more results
             if len(data) < self.results_per_page:
                 break
-
-            #break
-    # def resource(self, name, params={}):
-    #     resource = self.endpoints.get(name, {})
-    #     version = resource.get('version', 3)
-    #     path = resource.get('path', name)
-    #     transform_date_fields = resource.get('transform_date_fields', [])
-    #     exclude_paths = resource.get('exclude_paths', [])
-    #     url = self.make_url(version)(path)
-
-    #     # recursively unpack nested resources
-    #     # watch for recursion depth - but most APIs only go 2/3 levels deep
-    #     def unpack_resources(row, parent_key=()):
-    #         if type(row) == dict:
-    #             obj = {}
-    #             for key, value in row.items():
-    #                 path = parent_key + (key,)
-    #                 if path in exclude_paths:
-    #                     continue
-    #                 # exclude_paths
-    #                 if type(value) == dict and 'resource' in value:
-    #                     value = self.get(value['url'], {})
-    #                 if key in transform_date_fields:
-    #                     try:
-    #                         value = strftime(strptime_to_utc(value))
-    #                     except Exception as e:
-    #                         pass
-    #                 obj[key] = unpack_resources(value, path)
-    #             return obj
-    #         elif type(row) == list:
-    #             return [unpack_resources(el, parent_key) for el in row]
-    #         else:
-    #             return row
-
-    #     page = 0
-    #     while True:
-    #         page += 1
-    #         resp = self.get(url, {
-    #             **params,
-    #             **{'page': page}
-    #         })
-    #         data = resp if version == 2 else resp.get('data', [])
-    #         for row in data \
-    #                 if version == 2 else resp.get('data', []):
-    #             yield unpack_resources(row)
-    #         if len(data) < 50:
-    #             break

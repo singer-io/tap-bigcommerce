@@ -2,11 +2,14 @@
 import os
 import json
 import singer
+import tap_bigcommerce.utilities as tap_utils
 from singer import metadata
 from singer import utils
+from datetime import timedelta
 
 logger = singer.get_logger().getChild('tap-bigcommerce')
 
+schema_loader = tap_utils.SchemaLoader()
 
 def get_abs_path(path):
     return os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
@@ -61,30 +64,7 @@ class Stream():
             )
 
     def load_schema(self):
-        """
-        Load schema from JSON and resolve shared $ref
-        """
-        refs = {}
-        schema_file = "schemas/{}.json".format(self.name)
-        shared_schemas_path = get_abs_path('schemas/shared')
-        shared_file_names = [
-            f for f in os.listdir(shared_schemas_path) if os.path.isfile(
-                os.path.join(shared_schemas_path, f)
-            )
-        ]
-
-        for shared_file in shared_file_names:
-            with open(
-                os.path.join(shared_schemas_path, shared_file)
-            ) as data_file:
-                refs[shared_file] = json.load(data_file)
-
-        with open(get_abs_path(schema_file)) as f:
-            schema = json.load(f)
-
-        schema = singer.resolve_schema_references(schema, refs)
-
-        return schema
+        return schema_loader.load(self.name)
 
     def load_metadata(self):
         schema = self.load_schema()
@@ -149,14 +129,12 @@ class Stream():
     def sync(self, state):
         get_data = getattr(self.client, self.name)
 
-        self.bookmark_start = self.get_bookmark(state)
-
-        res = get_data(
-            replication_key=self.replication_key,
-            bookmark=self.bookmark_start
-        )
-
         if self.replication_method == "INCREMENTAL":
+            self.bookmark_start = self.get_bookmark(state)
+            res = get_data(
+                replication_key=self.replication_key,
+                bookmark=self.bookmark_start
+            )
             for i, item in enumerate(res):
                 try:
                     replication_value = item[self.replication_key]
@@ -176,8 +154,27 @@ class Stream():
                     pass
 
         elif self.replication_method == "FULL_TABLE":
-            for item in res:
-                yield (self.stream, item)
+            res = get_data()
+            last_sync = state.get('bookmarks', {}).get(self.name, {}).get('last_sync')
+
+            now = singer.utils.now()
+
+            diff = now - utils.strptime_with_tz(last_sync)
+
+            if timedelta(hours=24) <= diff:
+                for item in res:
+                    yield (self.stream, item)
+
+                singer.write_bookmark(
+                    state,
+                    self.name,
+                    "last_sync",
+                    singer.utils.strftime(now)
+                )
+
+            else:
+                logger.info("Skipping stream: {}, only {:.2f} hours elapsed".format(
+                    self.name, diff.total_seconds() / 3600))
 
         else:
             raise Exception(
@@ -197,7 +194,8 @@ class Products(Stream):
 
 class Coupons(Stream):
     name = "coupons"
-    replication_key = "id"
+    replication_key = None
+    replication_method = "FULL_TABLE"
 
 
 class Customers(Stream):
@@ -205,8 +203,8 @@ class Customers(Stream):
 
 
 STREAMS = {
-    'orders': Orders,
-    'products': Products,
+    # 'products': Products,
     'coupons': Coupons,
-    'customers': Customers
+    # 'customers': Customers,
+    # 'orders': Orders
 }

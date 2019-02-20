@@ -7,6 +7,7 @@ from singer import Transformer
 logger = singer.get_logger().getChild('tap-bigcommerce')
 
 def sync_stream(state, instance):
+    print(state)
     stream = instance.stream
 
     with metrics.record_counter(stream.tap_stream_id) as counter:
@@ -16,7 +17,8 @@ def sync_stream(state, instance):
             try:
                 with Transformer() as transformer:
                     record = transformer.transform(
-                        record, stream.schema.to_dict(),
+                        record,
+                        stream.schema.to_dict(),
                         metadata.to_map(stream.metadata)
                     )
                 singer.write_record(stream.tap_stream_id, record)
