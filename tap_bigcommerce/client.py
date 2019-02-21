@@ -43,7 +43,7 @@ def parse_date_string_arguments(fields):
                 if key in fields:
                     if type(value) != str:
                         raise Exception(
-                            "parse_date_string_arguments expects string value."
+                            "parse_date_string_arguments expects string value. {} provided".format(value)
                         )
                     kwargs[key] = parse(value)
             return method(*args, **kwargs)

@@ -57,16 +57,12 @@ allow an entire page of results to be processed within one window.
 """
 
 import requests.exceptions 
-from functools import partial
 from concurrent.futures import Future
 from requests_futures.sessions import FuturesSession
-import urllib
 from singer.utils import strptime_to_utc, strftime
 from singer import get_logger
 import time
 import math
-
-from functools import partial
 
 logger = get_logger().getChild('tap-bigcommerce')
 
