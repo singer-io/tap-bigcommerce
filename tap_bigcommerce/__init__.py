@@ -47,22 +47,23 @@ def ensure_credentials_are_authorized(client):
         raise Exception("BigCommerce Client not authorized.")
 
 
-def do_sync(client, catalog, state, start_date, full_table_max_hours):
+def do_sync(client, catalog, state, start_date, sync_full_table_every):
     ensure_credentials_are_authorized(client)
     selected_stream_names = get_selected_streams(catalog)
     populate_class_schemas(catalog, selected_stream_names)
 
     if state == {}:
         state = {'bookmarks': {}}
-        for stream in catalog.streams:
-            if (
-                stream.tap_stream_id in selected_stream_names
-            ) and (
-                stream.replication_key == "date_modified"
-            ):
-                state['bookmarks'][stream.tap_stream_id] = {
-                    stream.replication_key: start_date
-                }
+
+    for stream in catalog.streams:
+        if (
+            stream.tap_stream_id in selected_stream_names
+        ) and (
+            stream.replication_key == "date_modified"
+        ):
+            state['bookmarks'][stream.tap_stream_id] = {
+                stream.replication_key: start_date
+            }
 
     for stream in catalog.streams:
         stream_name = stream.tap_stream_id
@@ -83,6 +84,7 @@ def do_sync(client, catalog, state, start_date, full_table_max_hours):
 
         instance = STREAMS[stream_name](client)
         instance.stream = stream
+        instance.sync_full_table_every = sync_full_table_every
         counter_value = sync_stream(state, instance)
         singer.write_state(state)
         logger.info("%s: Completed sync (%s rows)", stream_name, counter_value)
@@ -123,7 +125,7 @@ def main():
             catalog=catalog,
             state=args.state,
             start_date=config['start_date'],
-            full_table_max_hours=config['full_table_replication_max_hours']
+            sync_full_table_every=config['sync_full_table_every']
         )
 
 
