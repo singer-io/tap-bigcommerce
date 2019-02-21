@@ -25,12 +25,15 @@ class Stream():
     session_bookmark = None
     filter_records_by_bookmark = False
     auto_select_fields = True
+    sync_full_table_every = 24
 
     def __init__(self, client):
         self.client = client
 
-    def get_bookmark(self, state):
-        return singer.get_bookmark(state, self.name, self.replication_key)
+    def get_bookmark(self, state, replication_key=None):
+        if replication_key is None:
+            replication_key = self.replication_key
+        return singer.get_bookmark(state, self.name, replication_key)
 
     def is_bookmark_old(self, value, bookmark):
         if value is None:
@@ -66,6 +69,34 @@ class Stream():
     def load_schema(self):
         return schema_loader.load(self.name)
 
+    def load_field_metadata(self, mdata, schema, parent=()):
+        if 'object' in schema.get('type', []):
+            for field_name, field_schema in schema['properties'].items():
+                inclusion = 'automatic' if (
+                    field_name in self.key_properties or
+                    field_name == self.replication_key
+                ) and (
+                    parent == ()
+                ) else 'available'
+
+                breadcrumb = parent + ('properties', field_name)
+
+                mdata = metadata.write(
+                    mdata,
+                    breadcrumb,
+                    'inclusion',
+                    inclusion
+                )
+
+                mdata = self.load_field_metadata(
+                    mdata, field_schema, breadcrumb)
+
+        elif 'array' in schema.get('type', []):
+            mdata = self.load_field_metadata(
+                mdata, schema.get('items', {}), parent + ('items',))
+
+        return mdata
+
     def load_metadata(self):
         schema = self.load_schema()
 
@@ -88,42 +119,23 @@ class Stream():
                 mdata, (), 'valid-replication-keys', [self.replication_key]
             )
 
-        if self.auto_select_fields:
-            # automatically include every property
-            mdata = metadata.write(
-                mdata, (), 'selected', True
-            )
-
-        for field_name in schema['properties'].keys():
-            if field_name in self.key_properties or \
-                    field_name == self.replication_key:
-                mdata = metadata.write(
-                    mdata,
-                    ('properties', field_name),
-                    'inclusion',
-                    'automatic'
-                )
-            else:
-                mdata = metadata.write(
-                    mdata,
-                    ('properties', field_name),
-                    'inclusion',
-                    'available'
-                )
-
-            if self.auto_select_fields:
-                # automatically include every property
-                mdata = metadata.write(
-                    mdata,
-                    ('properties', field_name),
-                    'selected',
-                    True
-                )
+        mdata = self.load_field_metadata(mdata, schema)
 
         return metadata.to_list(mdata)
 
     def is_selected(self):
         return self.stream is not None
+
+    def time_since_last_sync(self, state):
+        last_sync = self.get_bookmark(state, 'last_sync')
+        now = singer.utils.now()
+        return now - utils.strptime_with_tz(last_sync)
+
+    def update_bookmark_last_sync(self, state):
+        singer.write_bookmark(
+            state, self.name, "last_sync",
+            singer.utils.strftime(singer.utils.now())
+        )
 
     # The main sync function.
     def sync(self, state):
@@ -155,26 +167,18 @@ class Stream():
 
         elif self.replication_method == "FULL_TABLE":
             res = get_data()
-            last_sync = state.get('bookmarks', {}).get(self.name, {}).get('last_sync')
 
-            now = singer.utils.now()
+            diff = self.time_since_last_sync(state)
 
-            diff = now - utils.strptime_with_tz(last_sync)
-
-            if timedelta(hours=24) <= diff:
+            if timedelta(hours=self.sync_full_table_every) <= diff:
                 for item in res:
                     yield (self.stream, item)
 
-                singer.write_bookmark(
-                    state,
-                    self.name,
-                    "last_sync",
-                    singer.utils.strftime(now)
-                )
+                self.update_bookmark_last_sync(state)
 
             else:
-                logger.info("Skipping stream: {}, only {:.2f} hours elapsed".format(
-                    self.name, diff.total_seconds() / 3600))
+                logger.info("Skipping stream: {}, only {:.2f} hours \
+                elapsed".format(self.name, diff.total_seconds() / 3600))
 
         else:
             raise Exception(
@@ -203,8 +207,8 @@ class Customers(Stream):
 
 
 STREAMS = {
-    # 'products': Products,
+    'products': Products,
     'coupons': Coupons,
-    # 'customers': Customers,
-    # 'orders': Orders
+    'customers': Customers,
+    'orders': Orders
 }
