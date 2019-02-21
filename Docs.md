@@ -61,14 +61,14 @@ Bookmark Column: `date_modified`
 
 ### Coupons
 
-If coupons are updated after creation, they will not be replciated. Change replication to full 
+Coupons do not have a `date_modified` field, and replicated on the `id` field could mean edits to coupons after creation would not be synced. Instead, we use a full table replication, but store the timestamp of the last sync in the state file. Then, within the configuration, we can select the minimum number of hours that must have elapsed before the Coupons table is replicated again - default is 24 hours - that way you only replicate the table once a day and not on every tap run.
 
 
 Primary Key: `id`
 
-Replication Method: INCREMENTAL
+Replication Method: FULL_TABLE
 
-Bookmark Column: `date_modified`
+Bookmark Column: `last_sync`
 
 
 
