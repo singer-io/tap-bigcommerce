@@ -55,7 +55,7 @@ $ tap-bigcommerce --config config.json --discover > catalog.json
 
 ### Field selection
 
-You can tell the tap to extract specific fields by editing `catalog.json` to make selections. By default all fields are selected. You can change metadata for specific fields or tables and change the "selected" field value to false.
+You can tell the tap to extract specific fields by editing `catalog.json` to make selections (or use the [Singer Discover](https://github.com/chrisgoddard/singer-discover) utility. You can change metadata for specific fields or tables and change the "selected" field value to false.
 
 ```
 "metadata": [
