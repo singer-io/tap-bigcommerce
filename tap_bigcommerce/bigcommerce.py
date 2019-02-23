@@ -340,6 +340,8 @@ class Bigcommerce():
 
         sub_resources = resource.get('sub_resources', 0)
 
+        # adjust results per page based on number of sub resources and
+        # the request quota set by the initial authorization check request
         if sub_resources > 0:
             self.results_per_page = min(
                 self.results_per_page,
@@ -354,7 +356,7 @@ class Bigcommerce():
         while True:
             error_count = 0
             page += 1
-            logger.info("{}, page {}".format(name, page))
+
             params = {**params, **{
                 'page': page,
                 'limit': self.results_per_page
