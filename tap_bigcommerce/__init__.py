@@ -104,7 +104,7 @@ def main():
     config = args.config
 
     # create instance of BigCommerce client
-    bc = BigCommerce(
+    bigcommerce = BigCommerce(
         client_id=config['client_id'],
         access_token=config['access_token'],
         store_hash=config['store_hash']
@@ -112,16 +112,16 @@ def main():
 
     # If discover flag was passed, run discovery mode and dump output to stdout
     if args.discover:
-        do_discover(bc)
+        do_discover(bigcommerce)
     # Otherwise run in sync mode
     else:
         if args.catalog:
             catalog = args.catalog
         else:
-            catalog = discover_streams(bc)
+            catalog = discover_streams(bigcommerce)
 
         do_sync(
-            client=bc,
+            client=bigcommerce,
             catalog=catalog,
             state=args.state,
             start_date=config['start_date'],

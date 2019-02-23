@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 import json
 from singer import resolve_schema_references
@@ -13,9 +14,9 @@ def get_abs_path(path, file=None):
 class SchemaLoader():
 
     def __init__(
-        self,
-        schema_path=get_abs_path('schemas'),
-        shared_schemas_path=get_abs_path('schemas/shared')):
+            self,
+            schema_path=get_abs_path('schemas'),
+            shared_schemas_path=get_abs_path('schemas/shared')):
 
         self.schema_path = schema_path
         self.shared_schemas_path = shared_schemas_path

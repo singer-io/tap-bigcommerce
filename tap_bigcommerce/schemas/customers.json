@@ -1,6 +1,7 @@
 {
   "type": "object",
   "name": "customers",
+  "additionalProperties": false,
   "properties": {
     "id": {
       "$ref": "type-integer.json"
@@ -48,6 +49,7 @@
       "type": ["array", "null"],
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "properties": {
           "name": {
             "$ref": "type-string.json"

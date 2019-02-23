@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from functools import wraps
 
 import singer
@@ -86,8 +87,8 @@ class BigCommerce(Client):
     def orders(self, replication_key, bookmark):
 
         for order in self.api.resource('orders', {
-            'min_date_modified': bookmark.isoformat(),
-            'sort': 'date_modified:asc'
+                'min_date_modified': bookmark.isoformat(),
+                'sort': 'date_modified:asc'
         }):
             yield order
 
@@ -96,9 +97,9 @@ class BigCommerce(Client):
     def products(self, replication_key, bookmark):
 
         for product in self.api.resource('products', {
-            'date_modified:min': bookmark.isoformat(),
-            'sort': 'date_modified',
-            'direction': 'asc'
+                'date_modified:min': bookmark.isoformat(),
+                'sort': 'date_modified',
+                'direction': 'asc'
         }):
             yield product
 
@@ -107,7 +108,7 @@ class BigCommerce(Client):
     def customers(self, replication_key, bookmark):
 
         for customer in self.api.resource('customers', {
-            'min_date_modified': bookmark.isoformat(),
+                'min_date_modified': bookmark.isoformat(),
         }):
             yield customer
 

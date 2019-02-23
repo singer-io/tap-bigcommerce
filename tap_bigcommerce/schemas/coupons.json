@@ -1,6 +1,7 @@
 {
   "type": "object",
   "name": "coupons",
+  "additionalProperties": false,
   "properties": {
     "id": {
       "$ref": "type-integer.json"
@@ -28,6 +29,7 @@
     },
     "applies_to": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "entity": {
           "$ref": "type-string.json"

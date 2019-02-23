@@ -1,15 +1,16 @@
-
-import os
-import json
-import singer
-import tap_bigcommerce.utilities as tap_utils
+#!/usr/bin/env python
 from singer import metadata
 from singer import utils
 from datetime import timedelta
+import os
+import singer
+import tap_bigcommerce.utilities as tap_utils
+
 
 logger = singer.get_logger().getChild('tap-bigcommerce')
 
 schema_loader = tap_utils.SchemaLoader()
+
 
 def get_abs_path(path):
     return os.path.join(os.path.dirname(os.path.realpath(__file__)), path)

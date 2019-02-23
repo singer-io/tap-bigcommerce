@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 API wrapper for BigCommerce library.
 
@@ -56,13 +57,14 @@ allow an entire page of results to be processed within one window.
 
 """
 
-import requests.exceptions 
+import time
+import math
+
 from concurrent.futures import Future
 from requests_futures.sessions import FuturesSession
 from singer.utils import strptime_to_utc, strftime
 from singer import get_logger
-import time
-import math
+
 
 logger = get_logger().getChild('tap-bigcommerce')
 
@@ -324,7 +326,6 @@ class Bigcommerce():
             return future
 
     def resource(self, name, params={}, async_sub_resources=True):
-        logger.info((name, params))
         resource = self.endpoints.get(name, {})
         version = resource.get('version', 3)
         path = resource.get('path', name)
