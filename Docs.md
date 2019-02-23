@@ -58,6 +58,7 @@ Endpoint: [/v2/customers/](https://developer.bigcommerce.com/api-reference/custo
 * Replication Method: INCREMENTAL
 * Bookmark Column: `date_modified`
 
+_**Note**: Customer table is replicated independently from Order table. An order may be replicated without a corresponding customer entry if the customer data was not modified when a new order was created._
 
 ### Products
 
