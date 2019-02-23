@@ -128,6 +128,10 @@ class Stream():
 
     def time_since_last_sync(self, state):
         last_sync = self.get_bookmark(state, 'last_sync')
+
+        # if no last_sync, return 100 day timediff to ensure sync
+        if last_sync is None:
+            return timedelta(100)
         now = singer.utils.now()
         return now - utils.strptime_with_tz(last_sync)
 
