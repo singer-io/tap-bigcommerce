@@ -1,2 +1,3 @@
 include LICENSE
 include tap_bigcommerce/schemas/*.json
+include tap_bigcommerce/schemas/shared/*.json

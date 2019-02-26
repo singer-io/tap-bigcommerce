@@ -19,9 +19,13 @@ setup(
     tap-bigcommerce=tap_bigcommerce:main
     """,
     packages=["tap_bigcommerce"],
-    package_data = {
-        "schemas": ["tap_bigcommerce/schemas/*.json"],
-        "shared": ["tap_bigcommerce/schemas/shared/*.json"]
+    package_data={
+        'tap_bigcommerce/schemas': [
+            '*.json'
+        ],
+        'tap_bigcommerce/schemas/shared': [
+            '*.json'
+        ]
     },
     include_package_data=True,
 )
