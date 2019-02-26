@@ -11,7 +11,7 @@ In the directory:
 
 ```
 $ mkvirtualenv -p python3 tap-bigcommerce
-$ pip3 install -e .
+$ pip3 install https://github.com/chrisgoddard/tap-bigcommerce/archive/master.zip
 ```
 
 ## Usage
