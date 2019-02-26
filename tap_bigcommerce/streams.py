@@ -31,10 +31,10 @@ class Stream():
     def __init__(self, client):
         self.client = client
 
-    def get_bookmark(self, state, replication_key=None):
-        if replication_key is None:
-            replication_key = self.replication_key
-        return singer.get_bookmark(state, self.name, replication_key)
+    def get_bookmark(self, state):
+        # if replication_key is None:
+        #     replication_key = self.replication_key
+        return singer.get_bookmark(state, self.name, self.replication_key)
 
     def is_bookmark_old(self, value, bookmark):
         if value is None:
@@ -104,11 +104,15 @@ class Stream():
         mdata = metadata.new()
 
         mdata = metadata.write(
+            mdata, (), 'schema-name', self.name
+        )
+
+        mdata = metadata.write(
             mdata, (), 'table-key-properties', self.key_properties
         )
 
         mdata = metadata.write(
-            mdata, (), 'forced-replication-method', self.replication_method
+            mdata, (), 'replication-method', self.replication_method
         )
 
         mdata = metadata.write(
@@ -117,7 +121,7 @@ class Stream():
 
         if self.replication_key:
             mdata = metadata.write(
-                mdata, (), 'valid-replication-keys', [self.replication_key]
+                mdata, (), 'repllication-key', self.replication_key
             )
 
         mdata = self.load_field_metadata(mdata, schema)
@@ -128,7 +132,7 @@ class Stream():
         return self.stream is not None
 
     def time_since_last_sync(self, state):
-        last_sync = self.get_bookmark(state, 'last_sync')
+        last_sync = self.get_bookmark(state)
 
         # if no last_sync, return 100 day timediff to ensure sync
         if last_sync is None:
@@ -203,7 +207,7 @@ class Products(Stream):
 
 class Coupons(Stream):
     name = "coupons"
-    replication_key = None
+    replication_key = 'last_sync'
     replication_method = "FULL_TABLE"
 
 

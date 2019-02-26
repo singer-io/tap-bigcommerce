@@ -19,7 +19,6 @@ def discover_streams(client):
             'stream': s.name,
             'tap_stream_id': s.name,
             'schema': schema,
-            'replication_key': s.replication_key,
             'metadata': s.load_metadata()
         })
 
