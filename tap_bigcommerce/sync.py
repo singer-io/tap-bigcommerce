@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 import singer
 import singer.metrics as metrics
 from singer import metadata
@@ -22,8 +22,6 @@ def sync_stream(state, instance):
                         metadata.to_map(stream.metadata)
                     )
                 singer.write_record(stream.tap_stream_id, record)
-                if instance.replication_method == "INCREMENTAL":
-                    singer.write_state(state)
 
             except Exception as e:
                 logger.error('Handled exception: {error}'.format(error=str(e)))
