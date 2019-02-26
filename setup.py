@@ -20,7 +20,8 @@ setup(
     """,
     packages=["tap_bigcommerce"],
     package_data = {
-        "schemas": ["tap_bigcommerce/schemas/*.json"]
+        "schemas": ["tap_bigcommerce/schemas/*.json"],
+        "shared": ["tap_bigcommerce/schemas/shared/*.json"]
     },
     include_package_data=True,
 )
