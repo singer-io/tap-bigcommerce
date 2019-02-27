@@ -32,8 +32,6 @@ class Stream():
         self.client = client
 
     def get_bookmark(self, state):
-        # if replication_key is None:
-        #     replication_key = self.replication_key
         return singer.get_bookmark(state, self.name, self.replication_key)
 
     def is_bookmark_old(self, value, bookmark):
@@ -112,7 +110,7 @@ class Stream():
         )
 
         mdata = metadata.write(
-            mdata, (), 'replication-method', self.replication_method
+            mdata, (), 'forced-replication-method', self.replication_method
         )
 
         mdata = metadata.write(
@@ -121,7 +119,7 @@ class Stream():
 
         if self.replication_key:
             mdata = metadata.write(
-                mdata, (), 'repllication-key', self.replication_key
+                mdata, (), 'valid-replication-keys', [self.replication_key]
             )
 
         mdata = self.load_field_metadata(mdata, schema)
