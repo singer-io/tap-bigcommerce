@@ -52,18 +52,8 @@ def do_sync(client, catalog, state, start_date, sync_full_table_every):
     selected_stream_names = get_selected_streams(catalog)
     populate_class_schemas(catalog, selected_stream_names)
 
-    if state == {}:
+    if state.get('bookmarks') is None:
         state = {'bookmarks': {}}
-
-    for stream in catalog.streams:
-        if (
-            stream.tap_stream_id in selected_stream_names
-        ) and (
-            stream.replication_key == "date_modified"
-        ):
-            state['bookmarks'][stream.tap_stream_id] = {
-                stream.replication_key: start_date
-            }
 
     for stream in catalog.streams:
         stream_name = stream.tap_stream_id
@@ -85,6 +75,14 @@ def do_sync(client, catalog, state, start_date, sync_full_table_every):
         instance = STREAMS[stream_name](client)
         instance.stream = stream
         instance.sync_full_table_every = sync_full_table_every
+
+        if state['bookmarks'].get(
+            stream.tap_stream_id, {}
+        ).get(instance.replication_key) is None:
+            state['bookmarks'][stream.tap_stream_id] = {
+                instance.replication_key: start_date
+            }
+
         counter_value = sync_stream(state, instance)
         singer.write_state(state)
         logger.info("%s: Completed sync (%s rows)", stream_name, counter_value)
