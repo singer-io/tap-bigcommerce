@@ -71,9 +71,9 @@ Endpoint: [/v3/catalog/products](https://developer.bigcommerce.com/api-reference
 ### Coupons
 Endpoint: [/v2/coupons](https://developer.bigcommerce.com/api-reference/catalog/catalog-api/products/getproducts)
 
-Coupons do not have a `date_modified` field, and replicated on the `id` field could mean edits to coupons after creation would not be synced. Instead, we use a full table replication, but store the timestamp of the last sync in the state file. Then, within the configuration, we can select the minimum number of hours that must have elapsed before the Coupons table is replicated again - default is 24 hours - that way you only replicate the table once a day and not on every tap run.
+Coupons do not have a `date_modified` field, and replicated on the `id` field could mean edits to coupons after creation would not be synced. Therefore we use FULL_TABLE replication.
 
+To avoid creating too many duplicative rows, it is recommended that you create a separate instance of this tap that syncs less often - for instance once ever 12 or 24 hours.
 
 * Replication Method: FULL_TABLE
-* Bookmark Column: `last_sync`
 
