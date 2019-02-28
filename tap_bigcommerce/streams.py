@@ -129,21 +129,6 @@ class Stream():
     def is_selected(self):
         return self.stream is not None
 
-    def time_since_last_sync(self, state):
-        last_sync = self.get_bookmark(state)
-
-        # if no last_sync, return 100 day timediff to ensure sync
-        if last_sync is None:
-            return timedelta(100)
-        now = singer.utils.now()
-        return now - utils.strptime_with_tz(last_sync)
-
-    def update_bookmark_last_sync(self, state):
-        singer.write_bookmark(
-            state, self.name, "last_sync",
-            singer.utils.strftime(singer.utils.now())
-        )
-
     # The main sync function.
     def sync(self, state):
         get_data = getattr(self.client, self.name)
@@ -175,17 +160,8 @@ class Stream():
         elif self.replication_method == "FULL_TABLE":
             res = get_data()
 
-            diff = self.time_since_last_sync(state)
-
-            if timedelta(hours=self.sync_full_table_every) <= diff:
-                for item in res:
-                    yield (self.stream, item)
-
-                self.update_bookmark_last_sync(state)
-
-            else:
-                logger.info("Skipping stream: {}, only {:.2f} hours \
-                elapsed".format(self.name, diff.total_seconds() / 3600))
+            for item in res:
+                yield (self.stream, item)
 
         else:
             raise Exception(
@@ -205,8 +181,8 @@ class Products(Stream):
 
 class Coupons(Stream):
     name = "coupons"
-    replication_key = 'last_sync'
     replication_method = "FULL_TABLE"
+    replication_key = None
 
 
 class Customers(Stream):

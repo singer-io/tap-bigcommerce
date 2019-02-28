@@ -55,7 +55,18 @@
       "$ref": "type-integer.json"
     },
     "restricted_to": {
-      "$ref": "type-string.json"
+      "type": ["array", "null"],
+      "items": {
+        "type": ["object", "null"],
+        "properties": {
+          "countries": {
+            "type": ["array", "null"],
+            "items": {
+              "$ref": "type-string.json"
+            }
+          }
+        }
+      }
     },
     "shipping_methods": {
       "type": ["array", "null"],
