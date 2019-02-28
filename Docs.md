@@ -71,7 +71,7 @@ Endpoint: [/v3/catalog/products](https://developer.bigcommerce.com/api-reference
 ### Coupons
 Endpoint: [/v2/coupons](https://developer.bigcommerce.com/api-reference/catalog/catalog-api/products/getproducts)
 
-Coupons do not have a `date_modified` field, and replicated on the `id` field could mean edits to coupons after creation would not be synced. Therefore we use FULL_TABLE replication.
+The Coupons table does not have a `date_modified` field, and replicated on the `id` field could mean edits to coupons after creation would not be synced. Therefore we use FULL_TABLE replication.
 
 To avoid creating too many duplicative rows, it is recommended that you create a separate instance of this tap that syncs less often - for instance once ever 12 or 24 hours.
 
