@@ -27,8 +27,6 @@ This config is to authenticate into BigCommerce. Legacy API credentials not acce
 
 "start_date" is used for resources that can be filtered by date_modified - orders, customers and products
 
-Coupons table is incremental but doesn't have a date_modified field, so id is used as replication key
-
 
 ```
 {
