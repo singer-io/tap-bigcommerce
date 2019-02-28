@@ -76,4 +76,3 @@ The Coupons table does not have a `date_modified` field, and replicated on the `
 To avoid creating too many duplicative rows, it is recommended that you create a separate instance of this tap that syncs less often - for instance once ever 12 or 24 hours.
 
 * Replication Method: FULL_TABLE
-
