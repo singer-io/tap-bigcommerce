@@ -102,10 +102,6 @@ class Stream():
         mdata = metadata.new()
 
         mdata = metadata.write(
-            mdata, (), 'schema-name', self.name
-        )
-
-        mdata = metadata.write(
             mdata, (), 'table-key-properties', self.key_properties
         )
 
