@@ -22,4 +22,4 @@ def discover_streams(client):
             'metadata': s.load_metadata()
         })
 
-    return streams
+    return {"streams": streams}

@@ -62,6 +62,7 @@ import math
 
 from concurrent.futures import Future
 from requests_futures.sessions import FuturesSession
+from requests.exceptions import HTTPError
 from singer.utils import strptime_to_utc, strftime
 from singer import get_logger
 
@@ -262,7 +263,9 @@ class Bigcommerce():
         }
 
         # auth check and get rate limit window
-        self.get(self.make_url(2, 'time'), resolve=True)
+        r = self.get(self.make_url(2, 'time'), resolve=True)
+        if r.status_code:
+            logger.info("BigCommerce API Authorized.")
 
     def _response_hook(self, resp, *args, **kwargs):
         self.request_count += 1
@@ -273,7 +276,7 @@ class Bigcommerce():
             if resp.status_code == 204:
                 resp.data = None
             else:
-                raise requests.exceptions.HTTPError(resp)
+                raise HTTPError(resp)
         else:
             resp.data = resp.json()
 

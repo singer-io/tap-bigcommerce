@@ -2,7 +2,7 @@
 import sys
 import json
 import singer
-from singer import utils, metadata
+from singer import utils, metadata, Catalog
 
 from tap_bigcommerce.client import BigCommerce
 from tap_bigcommerce.discover import discover_streams
@@ -18,7 +18,7 @@ logger = singer.get_logger().getChild('tap-bigcommerce')
 
 def do_discover(client):
     logger.info("Starting discover")
-    catalog = {"streams": discover_streams(client)}
+    catalog = discover_streams(client)
     json.dump(catalog, sys.stdout, indent=2)
     logger.info("Finished discover")
 
@@ -116,7 +116,7 @@ def main():
         if args.catalog:
             catalog = args.catalog
         else:
-            catalog = discover_streams(bigcommerce)
+            catalog = Catalog.from_dict(discover_streams(bigcommerce))
 
         do_sync(
             client=bigcommerce,
