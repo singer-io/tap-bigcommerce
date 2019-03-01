@@ -204,7 +204,7 @@ class Bigcommerce():
                 'date_modified',
                 'date_created'
             ],
-            'sub_resources': 1,
+            'sub_resources': 0,
             'exclude_paths': [
                 ('addresses',)
             ]
@@ -274,7 +274,7 @@ class Bigcommerce():
 
         if resp.status_code != 200:
             if resp.status_code == 204:
-                resp.data = None
+                resp.data = []
             else:
                 raise HTTPError(resp)
         else:
@@ -378,7 +378,6 @@ class Bigcommerce():
                     time.sleep(sec)
 
             data = r.data if version == 2 else r.data.get('data', [])
-
             # unpack nested resources for entire page of results
             data = unpack_resources(data)
 
