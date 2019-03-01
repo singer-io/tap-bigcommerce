@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from singer import metadata
 from singer import utils
-from datetime import timedelta
 import os
 import singer
 import tap_bigcommerce.utilities as tap_utils

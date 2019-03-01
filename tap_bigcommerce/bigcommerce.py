@@ -376,8 +376,10 @@ class Bigcommerce():
                 r = self.get(url, params).result()
             except BigCommerceRateLimitException as e:
                 delay = (self.rate_limit['window_size_ms'] / 1000)
-                logger.error("BigCommerce rate limit exceeded. \
-                    Waiting {:.2f}".format(delay))
+                logger.error((
+                    "BigCommerce rate limit exceeded. ",
+                    "Waiting {:.2f}"
+                ).format(delay))
                 time.sleep(delay + 1)
                 # retry the same page
                 page -= 1
@@ -386,10 +388,10 @@ class Bigcommerce():
             if self.rate_limit['requests_remaining'] is not None:
                 if (self.rate_limit['requests_remaining'] - requests_need) < 1:
                     sec = self.rate_limit['ms_until_reset'] / 1000
-                    logger.warning(
-                        "Not enough requests available to complete request. \
-                        Waiting {:.2f} sec".format(sec)
-                    )
+                    logger.warning((
+                        "Not enough requests available to complete request. "
+                        "Waiting {:.2f} sec"
+                    ).format(sec))
                     self.request_count = 0
                     time.sleep(sec)
 
@@ -406,8 +408,10 @@ class Bigcommerce():
                         date_fields)
             except BigCommerceRateLimitException as e:
                 delay = (self.rate_limit['window_size_ms'] / 1000)
-                logger.error("BigCommerce rate limit exceeded. \
-                    Waiting {:.2f}".format(delay))
+                logger.error((
+                    "BigCommerce rate limit exceeded. "
+                    "Waiting {:.2f}"
+                ).format(delay))
                 time.sleep(delay + 1)
                 # retry the same page
                 page -= 1
