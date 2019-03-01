@@ -163,6 +163,10 @@ def resolve_resources(row, parent_key=()):
         return row
 
 
+class BigCommerceRateLimitException(Exception):
+    pass
+
+
 class Bigcommerce():
 
     auth_check_url = "https://api.bigcommerce.com/store"
@@ -275,6 +279,8 @@ class Bigcommerce():
         if resp.status_code != 200:
             if resp.status_code == 204:
                 resp.data = []
+            elif resp.status_code == 429:
+                raise BigCommerceRateLimitException(resp)
             else:
                 raise HTTPError(resp)
         else:
@@ -366,7 +372,14 @@ class Bigcommerce():
                 'limit': self.results_per_page
             }}
 
-            r = self.get(url, params).result()
+            try:
+                r = self.get(url, params).result()
+            except BigCommerceRateLimitException as e:
+                logger.error("BigCommerce rate limit exceeded.")
+                time.sleep((self.rate_limit['ms_until_reset'] / 1000) + 5)
+                # retry the same page
+                page -= 1
+                continue
 
             if self.rate_limit['requests_remaining'] is not None:
                 if (self.rate_limit['requests_remaining'] - requests_need) < 1:
@@ -388,6 +401,12 @@ class Bigcommerce():
                             resolve_resources(row),
                             exclude_paths),
                         date_fields)
+            except BigCommerceRateLimitException as e:
+                logger.error("BigCommerce rate limit exceeded.")
+                time.sleep((self.rate_limit['ms_until_reset'] / 1000) + 5)
+                # retry the same page
+                page -= 1
+                continue
             except Exception as e:
                 error_count += 1
                 logger.warning(
