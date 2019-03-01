@@ -2,9 +2,9 @@
 from functools import wraps
 
 import singer
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.parser import parse
-
+from tap_bigcommerce.utilities import to_utc
 from tap_bigcommerce.bigcommerce import Bigcommerce
 
 logger = singer.get_logger().getChild('tap-bigcommerce')
@@ -68,7 +68,7 @@ class BigCommerce(Client):
         self.client_id = client_id
         self.access_token = access_token
         self.store_hash = store_hash
-
+        self.utcnow = singer.utils.now()
         self._reset_session()
 
     def _reset_session(self):
@@ -82,6 +82,12 @@ class BigCommerce(Client):
         except Exception as e:
             self.authorized = False
             raise e
+
+    def iterdates(self, start_date):
+        for n in range(max(int((self.utcnow - start_date).days), 1)):
+            start = start_date + timedelta(n)
+            end = start_date + timedelta(n + 1)
+            yield start, min(end, self.utcnow)
 
     @parse_date_string_arguments('bookmark')
     @validate
@@ -107,11 +113,17 @@ class BigCommerce(Client):
     @parse_date_string_arguments('bookmark')
     @validate
     def customers(self, replication_key, bookmark):
+        """
+        Customers endpoint can't sort by date_modified, so resource
+        is queried by day to ensure consistent replication key
+        """
 
-        for customer in self.api.resource('customers', {
-                'min_date_modified': bookmark.isoformat(),
-        }):
-            yield customer
+        for start, end in self.iterdates(bookmark):
+            for customer in self.api.resource('customers', {
+                    'min_date_modified': start.isoformat(),
+                    'max_date_modified': end.isoformat()
+            }):
+                yield customer
 
     def coupons(self):
 
