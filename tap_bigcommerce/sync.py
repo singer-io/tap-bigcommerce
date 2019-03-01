@@ -23,7 +23,7 @@ def sync_stream(state, instance):
                     )
                 singer.write_record(stream.tap_stream_id, record)
 
-                if counter.value % 500 == 0:
+                if counter.value % 1000 == 0:
                     singer.write_state(state)
 
             except Exception as e:
