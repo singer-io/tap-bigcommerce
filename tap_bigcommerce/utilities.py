@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 import os
 import json
+import pytz
 from singer import resolve_schema_references
+
+
+def to_utc(dtime):
+    return dtime.replace(tzinfo=pytz.UTC)
 
 
 def get_abs_path(path, file=None):
