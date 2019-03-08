@@ -14,32 +14,32 @@ for [BigCommerce](https://developer.bigcommerce.com/).
 
 1. Create the `config.json` file.
 
-```
-{
-  "client_id": "xxxxxxxxx",
-  "access_token": "xxxxxxxxx",
-  "store_hash": "xxxxxxxxx",
-  "start_date": "2017-01-01T00:00:00Z"
-}
-```
+    ```
+    {
+      "client_id": "xxxxxxxxx",
+      "access_token": "xxxxxxxxx",
+      "store_hash": "xxxxxxxxx",
+      "start_date": "2017-01-01T00:00:00Z"
+    }
+    ```
 
 1. Run the tap in
    [Discovery Mode](https://github.com/singer-io/getting-started/blob/master/docs/DISCOVERY_MODE.md#discovery-mode)
    to create the
    [Catalog](https://github.com/singer-io/getting-started/blob/master/docs/DISCOVERY_MODE.md#the-catalog).
 
-```
-$ tap-bigcommerce --config config.json --discover > catalog.json
-```
+    ```
+    $ tap-bigcommerce --config config.json --discover > catalog.json
+    ```
 
 1. Select the fields you wish to sync. See
    [Field Selection](#field-selection) below for more information.
 
 1. Run the tap in Sync Mode.
 
-```
-$ tap-bigcommerce --config config.json --catalog catalog.json
-```
+    ```
+    $ tap-bigcommerce --config config.json --catalog catalog.json
+    ```
 
 ## About this tap
 
