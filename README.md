@@ -128,3 +128,6 @@ of choice and update the state file in one go.
 tap-bigcommerce --config config.json --catalog catalog.json --state state.json | target > state.json.tmp && tail -1 state.json.tmp > state.json
 ```
 
+---
+
+Copyright &copy; 2019 Stitch
