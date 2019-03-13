@@ -4,35 +4,35 @@
   "additionalProperties": false,
   "properties": {
     "id": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "name": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "type": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "amount": {
-      "$ref": "shared/type-number.json#/"
+      "$ref": "type-number.json"
     },
     "min_purchase": {
-      "$ref": "shared/type-number.json#/"
+      "$ref": "type-number.json"
     },
     "expires": {
-      "$ref": "shared/type-datetime.json#/"
+      "$ref": "type-datetime.json"
     },
     "enabled": {
-      "$ref": "shared/type-boolean.json#/"
+      "$ref": "type-boolean.json"
     },
     "code": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "applies_to": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "entity": {
-          "$ref": "shared/type-string.json#/"
+          "$ref": "type-string.json"
         },
         "ids": {
           "type": [
@@ -40,19 +40,19 @@
             "null"
           ],
           "items": {
-            "$ref": "shared/type-integer.json#/"
+            "$ref": "type-integer.json"
           }
         }
       }
     },
     "num_uses": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "max_uses": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "max_uses_per_customer": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "restricted_to": {
       "type": ["array", "null"],
@@ -62,7 +62,7 @@
           "countries": {
             "type": ["array", "null"],
             "items": {
-              "$ref": "shared/type-string.json#/"
+              "$ref": "type-string.json"
             }
           }
         }
@@ -71,11 +71,11 @@
     "shipping_methods": {
       "type": ["array", "null"],
       "items": {
-        "$ref": "shared/type-string.json#/"
+        "$ref": "type-string.json"
       }
     },
     "date_created": {
-      "$ref": "shared/type-datetime.json#/"
+      "$ref": "type-datetime.json"
     }
   }
 }

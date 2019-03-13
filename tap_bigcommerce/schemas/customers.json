@@ -4,46 +4,46 @@
   "additionalProperties": false,
   "properties": {
     "id": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "company": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "first_name": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "last_name": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "email": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "phone": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "date_created": {
-      "$ref": "shared/type-datetime.json#/"
+      "$ref": "type-datetime.json"
     },
     "date_modified": {
-      "$ref": "shared/type-datetime.json#/"
+      "$ref": "type-datetime.json"
     },
     "store_credit": {
-      "$ref": "shared/type-number.json#/"
+      "$ref": "type-number.json"
     },
     "registration_ip_address": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "customer_group_id": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "notes": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "tax_exempt_category": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "accepts_marketing": {
-      "$ref": "shared/type-boolean.json#/"
+      "$ref": "type-boolean.json"
     },
     "form_fields": {
       "type": ["array", "null"],
@@ -52,16 +52,16 @@
         "additionalProperties": false,
         "properties": {
           "name": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "value": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           }
         }
       }
     },
     "reset_pass_on_login": {
-      "$ref": "shared/type-boolean.json#/"
+      "$ref": "type-boolean.json"
     }
   }
 }

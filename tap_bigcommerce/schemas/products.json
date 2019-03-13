@@ -3,222 +3,222 @@
   "name": "products",
   "properties": {
     "name": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "type": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "sku": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "description": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "weight": {
-      "$ref": "shared/type-number.json#/"
+      "$ref": "type-number.json"
     },
     "width": {
-      "$ref": "shared/type-number.json#/"
+      "$ref": "type-number.json"
     },
     "depth": {
-      "$ref": "shared/type-number.json#/"
+      "$ref": "type-number.json"
     },
     "height": {
-      "$ref": "shared/type-number.json#/"
+      "$ref": "type-number.json"
     },
     "price": {
-      "$ref": "shared/type-number.json#/"
+      "$ref": "type-number.json"
     },
     "cost_price": {
-      "$ref": "shared/type-number.json#/"
+      "$ref": "type-number.json"
     },
     "retail_price": {
-      "$ref": "shared/type-number.json#/"
+      "$ref": "type-number.json"
     },
     "sale_price": {
-      "$ref": "shared/type-number.json#/"
+      "$ref": "type-number.json"
     },
     "calculated_price": {
-      "$ref": "shared/type-number.json#/"
+      "$ref": "type-number.json"
     },
     "map_price": {
-      "$ref": "shared/type-number.json#/"
+      "$ref": "type-number.json"
     },
     "tax_class_id": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "product_tax_code": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "categories": {
       "type": "array",
       "items": {
-        "$ref": "shared/type-integer.json#/"
+        "$ref": "type-integer.json"
       }
     },
     "brand_id": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "inventory_level": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "inventory_warning_level": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "inventory_tracking": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "fixed_cost_shipping_price": {
-      "$ref": "shared/type-number.json#/"
+      "$ref": "type-number.json"
     },
     "is_free_shipping": {
-      "$ref": "shared/type-boolean.json#/"
+      "$ref": "type-boolean.json"
     },
     "is_visible": {
-      "$ref": "shared/type-boolean.json#/"
+      "$ref": "type-boolean.json"
     },
     "is_featured": {
-      "$ref": "shared/type-boolean.json#/"
+      "$ref": "type-boolean.json"
     },
     "related_products": {
       "type": "array",
       "items": {
-        "$ref": "shared/type-integer.json#/"
+        "$ref": "type-integer.json"
       }
     },
     "warranty": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "bin_picking_number": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "layout_file": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "upc": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "search_keywords": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "availability": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "availability_description": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "gift_wrapping_options_type": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "gift_wrapping_options_list": {
       "type": ["array", "null"],
       "items": {
-        "$ref": "shared/type-integer.json#/"
+        "$ref": "type-integer.json"
       }
     },
     "sort_order": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "condition": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "is_condition_shown": {
-      "$ref": "shared/type-boolean.json#/"
+      "$ref": "type-boolean.json"
     },
     "order_quantity_minimum": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "order_quantity_maximum": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "page_title": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "meta_keywords": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "meta_description": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "view_count": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "preorder_release_date": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "preorder_message": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "is_preorder_only": {
-      "$ref": "shared/type-boolean.json#/"
+      "$ref": "type-boolean.json"
     },
     "is_price_hidden": {
-      "$ref": "shared/type-boolean.json#/"
+      "$ref": "type-boolean.json"
     },
     "price_hidden_label": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "custom_url": {
       "type": ["object", "null"],
       "properties": {
         "url": {
-          "$ref": "shared/type-string.json#/"
+          "$ref": "type-string.json"
         },
         "is_customized": {
-          "$ref": "shared/type-boolean.json#/"
+          "$ref": "type-boolean.json"
         }
       }
     }, 
     "open_graph_type": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "open_graph_title": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "open_graph_description": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "open_graph_use_meta_description": {
-      "$ref": "shared/type-boolean.json#/"
+      "$ref": "type-boolean.json"
     },
     "open_graph_use_product_name": {
-      "$ref": "shared/type-boolean.json#/"
+      "$ref": "type-boolean.json"
     },
     "open_graph_use_image": {
-      "$ref": "shared/type-boolean.json#/"
+      "$ref": "type-boolean.json"
     },
     "brand_name": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "gtin": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "mpn": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     },
     "id": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "reviews_rating_sum": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "reviews_count": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "total_sold": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "custom_fields": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "shared/type-string.json#/"
+          "$ref": "type-string.json"
         },
         "value": {
-          "$ref": "shared/type-string.json#/"
+          "$ref": "type-string.json"
         },
         "id": {
-          "$ref": "shared/type-integer.json#/"
+          "$ref": "type-integer.json"
         }
       }
     },
@@ -228,28 +228,28 @@
         "type": "object",
         "properties": {
           "quantity_min": {
-            "$ref": "shared/type-integer.json#/"
+            "$ref": "type-integer.json"
           },
           "quantity_max": {
-            "$ref": "shared/type-integer.json#/"
+            "$ref": "type-integer.json"
           },
           "type": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "amount": {
-            "$ref": "shared/type-number.json#/"
+            "$ref": "type-number.json"
           },
           "id": {
-            "$ref": "shared/type-integer.json#/"
+            "$ref": "type-integer.json"
           }
         }
       }
     },
     "date_created": {
-      "$ref": "shared/type-datetime.json#/"
+      "$ref": "type-datetime.json"
     },
     "date_modified": {
-      "$ref": "shared/type-datetime.json#/"
+      "$ref": "type-datetime.json"
     },
     "images": {
       "type": ["array", "null"],
@@ -257,37 +257,37 @@
         "type": "object",
         "properties": {
           "is_thumbnail": {
-            "$ref": "shared/type-boolean.json#/"
+            "$ref": "type-boolean.json"
           },
           "sort_order": {
-            "$ref": "shared/type-integer.json#/"
+            "$ref": "type-integer.json"
           },
           "description": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "id": {
-            "$ref": "shared/type-integer.json#/"
+            "$ref": "type-integer.json"
           },
           "product_id": {
-            "$ref": "shared/type-integer.json#/"
+            "$ref": "type-integer.json"
           },
           "image_file": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "url_zoom": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "url_standard": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "url_thumbnail": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "url_tiny": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "date_modified": {
-            "$ref": "shared/type-datetime.json#/"
+            "$ref": "type-datetime.json"
           }
         }
       }
@@ -298,28 +298,28 @@
         "type": "object",
         "properties": {
           "title": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "description": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "sort_order": {
-            "$ref": "shared/type-integer.json#/"
+            "$ref": "type-integer.json"
           },
           "type": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "id": {
-            "$ref": "shared/type-integer.json#/"
+            "$ref": "type-integer.json"
           },
           "video_id": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "product_id": {
-            "$ref": "shared/type-integer.json#/"
+            "$ref": "type-integer.json"
           },
           "length": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           }
         }
       }
@@ -330,70 +330,70 @@
         "type": "object",
         "properties": {
           "cost_price": {
-            "$ref": "shared/type-number.json#/"
+            "$ref": "type-number.json"
           },
           "price": {
-            "$ref": "shared/type-number.json#/"
+            "$ref": "type-number.json"
           },
           "sale_price": {
-            "$ref": "shared/type-number.json#/"
+            "$ref": "type-number.json"
           },
           "map_price": {
-            "$ref": "shared/type-number.json#/"
+            "$ref": "type-number.json"
           },
           "weight": {
-            "$ref": "shared/type-number.json#/"
+            "$ref": "type-number.json"
           },
           "width": {
-            "$ref": "shared/type-number.json#/"
+            "$ref": "type-number.json"
           },
           "width": {
-            "$ref": "shared/type-number.json#/"
+            "$ref": "type-number.json"
           },
           "height": {
-            "$ref": "shared/type-number.json#/"
+            "$ref": "type-number.json"
           },
           "depth": {
-            "$ref": "shared/type-number.json#/"
+            "$ref": "type-number.json"
           },
           "is_free_shipping": {
-            "$ref": "shared/type-boolean.json#/"
+            "$ref": "type-boolean.json"
           },
           "fixed_cost_shipping_price": {
-            "$ref": "shared/type-number.json#/"
+            "$ref": "type-number.json"
           },
           "purchasing_disabled": {
-            "$ref": "shared/type-boolean.json#/"
+            "$ref": "type-boolean.json"
           },
           "purchasing_disabled_message": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "image_url": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "upc": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "inventory_level": {
-            "$ref": "shared/type-integer.json#/"
+            "$ref": "type-integer.json"
           },
           "inventory_warning_level": {
-            "$ref": "shared/type-integer.json#/"
+            "$ref": "type-integer.json"
           },
           "bin_picking_number": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "id": {
-            "$ref": "shared/type-integer.json#/"
+            "$ref": "type-integer.json"
           },
           "product_id": {
-            "$ref": "shared/type-integer.json#/"
+            "$ref": "type-integer.json"
           },
           "sku": {
-            "$ref": "shared/type-string.json#/"
+            "$ref": "type-string.json"
           },
           "sku_id": {
-            "$ref": "shared/type-integer.json#/"
+            "$ref": "type-integer.json"
           },
           "option_values": {
             "type": ["array", "null"],
@@ -401,34 +401,34 @@
               "type": "object",
               "properties": {
                 "option_display_name": {
-                  "$ref": "shared/type-string.json#/"
+                  "$ref": "type-string.json"
                 },
                 "label": {
-                  "$ref": "shared/type-string.json#/"
+                  "$ref": "type-string.json"
                 },
                 "id": {
-                  "$ref": "shared/type-integer.json#/"
+                  "$ref": "type-integer.json"
                 },
                 "option_id": {
-                  "$ref": "shared/type-integer.json#/"
+                  "$ref": "type-integer.json"
                 }
               }
             }
           },
           "calculated_price": {
-            "$ref": "shared/type-number.json#/"
+            "$ref": "type-number.json"
           }
         }
       }
     },
     "base_variant_id": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "option_set_id": {
-      "$ref": "shared/type-integer.json#/"
+      "$ref": "type-integer.json"
     },
     "option_set_display": {
-      "$ref": "shared/type-string.json#/"
+      "$ref": "type-string.json"
     }
   }
 }
