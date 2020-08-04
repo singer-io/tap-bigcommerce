@@ -377,7 +377,7 @@ class Bigcommerce():
             except BigCommerceRateLimitException as e:
                 delay = (self.rate_limit['window_size_ms'] / 1000)
                 logger.error((
-                    "BigCommerce rate limit exceeded. ",
+                    "BigCommerce rate limit exceeded. "
                     "Waiting {:.2f}"
                 ).format(delay))
                 time.sleep(delay + 1)
