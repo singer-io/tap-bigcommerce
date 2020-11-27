@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "name": "attribute-values",
+  "additionalProperties": false,
+  "properties": {
+    "attribute_value": {
+      "$ref":"type-string.json"
+    },
+    "attribute_id": {
+      "$ref":"type-integer.json"
+    },
+    "value": {
+      "$ref": "type-string.json"
+    },
+    "id": {
+      "$ref": "type-integer.json"
+    },
+    "customer_id": {
+      "$ref": "type-integer.json"
+    },
+    "date_modified": {
+      "$ref": "type-datetime.json"
+    },
+    "date_created": {
+      "$ref": "type-datetime.json"
+    }
+  }
+}

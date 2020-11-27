@@ -125,6 +125,11 @@ class BigCommerce(Client):
             }):
                 yield customer
 
+    def attributevalues(self):
+        for attributeValue in self.api.resource('attribute-values'):
+            yield attributeValue
+
+
     def coupons(self):
 
         for coupon in self.api.resource('coupons'):

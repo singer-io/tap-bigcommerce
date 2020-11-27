@@ -224,6 +224,10 @@ class Bigcommerce():
                 'date_created',
                 'expires'
             ]
+        },
+        'attribute-values': {
+           'version': 3,
+           'path': 'customers/attribute-values'
         }
     }
 
