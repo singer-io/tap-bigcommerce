@@ -188,11 +188,15 @@ class Coupons(Stream):
 class Customers(Stream):
     name = "customers"
 
+class CustomersV3(Stream):
+    name = "customersv3"
+
 
 STREAMS = {
     'products': Products,
     'coupons': Coupons,
     'customers': Customers,
     'orders': Orders,
-    'attributevalues': AttributeValues
+    'attributevalues': AttributeValues,
+    'customersv3': CustomersV3
 }

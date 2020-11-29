@@ -213,6 +213,10 @@ class Bigcommerce():
                 ('addresses',)
             ]
         },
+        'customersv3': {
+            'version': 3,
+            'path': 'customers'
+        },
         'products': {
             'version': 3,
             'path': 'catalog/products',
