@@ -121,7 +121,8 @@ class BigCommerce(Client):
         for start, end in self.iterdates(bookmark):
             for customer in self.api.resource('customers', {
                     'date_modified:min': start.isoformat(),
-                    'date_modified:max': end.isoformat()
+                    'date_modified:max': end.isoformat(),
+                    'include': ','.join(self.api.endpoints.get('customers').get('include_extra_paths'))
             }):
                 yield customer
 

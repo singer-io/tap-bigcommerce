@@ -209,7 +209,8 @@ class Bigcommerce():
                 'date_created'
             ],
             'sub_resources': 0,
-            'exclude_paths': []
+            'exclude_paths': [],
+            'include_extra_paths': ['addresses']
         },
         'products': {
             'version': 3,
