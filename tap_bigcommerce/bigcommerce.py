@@ -327,6 +327,8 @@ class Bigcommerce():
             concurrent.futures.Future
         """
         future = self.session.get(url, params=params, headers=self.headers)
+        print('LINE 330')
+        print(future.result().request.url)
 
         if resolve:
             return future.result()
