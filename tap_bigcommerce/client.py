@@ -120,8 +120,8 @@ class BigCommerce(Client):
 
         for start, end in self.iterdates(bookmark):
             for customer in self.api.resource('customers', {
-                    'min_date_modified': start.isoformat(),
-                    'max_date_modified': end.isoformat()
+                    'date_modified:min': start.isoformat(),
+                    'date_modified:max': end.isoformat()
             }):
                 yield customer
 
