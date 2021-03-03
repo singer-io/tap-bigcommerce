@@ -329,6 +329,8 @@ class Bigcommerce():
         future = self.session.get(url, params=params, headers=self.headers)
         print('LINE 330')
         print(future.result().request.url)
+        print('XXXXXX')
+        print(future.result().json())
 
         if resolve:
             return future.result()
