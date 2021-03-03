@@ -202,7 +202,7 @@ class Bigcommerce():
             ]
         },
         'customers': {
-            'version': 2,
+            'version': 3,
             'path': 'customers',
             'transform_date_fields': [
                 'date_modified',
