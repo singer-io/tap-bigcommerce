@@ -6,6 +6,57 @@
     "id": {
       "$ref": "type-integer.json"
     },
+    "addresses": {
+      "type": ["array","null"],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "address1": {
+            "$ref": "type-string.json"
+          },
+          "address2": {
+            "$ref": "type-string.json"
+          },
+          "address_type": {
+            "$ref": "type-string.json"
+          },
+          "city": {
+            "$ref": "type-string.json"
+          },
+          "company": {
+            "$ref": "type-string.json"
+          },
+          "country": {
+            "$ref": "type-string.json"
+          },
+          "country_code": {
+            "$ref": "type-string.json"
+          },
+          "customer_id": {
+            "$ref": "type-integer.json"
+          },
+          "first_name": {
+            "$ref": "type-string.json"
+          },
+          "id": {
+            "$ref": "type-integer.json"
+          },
+          "last_name": {
+            "$ref": "type-string.json"
+          },
+          "phone": {
+            "$ref": "type-string.json"
+          },
+          "postal_code": {
+            "$ref": "type-string.json"
+          },
+          "state_or_province": {
+            "$ref": "type-string.json"
+          }
+        }
+      }
+    },
     "company": {
       "$ref": "type-string.json"
     },

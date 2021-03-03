@@ -124,8 +124,6 @@ class BigCommerce(Client):
                     'date_modified:max': end.isoformat(),
                     'include': ','.join(self.api.endpoints.get('customers').get('include_extra_paths'))
             }):
-                print('XXXXX - Customer - XXXXXX')
-                print(customer)
                 yield customer
 
     def coupons(self):

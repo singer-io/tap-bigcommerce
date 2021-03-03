@@ -397,8 +397,6 @@ class Bigcommerce():
             data = r.data if version == 2 else r.data.get('data', [])
             # unpack nested resources for entire page of results
             data = unpack_resources(data)
-            print('XXXXXX - data - XXXXXX')
-            print(data)
 
             try:
                 for row in data:
