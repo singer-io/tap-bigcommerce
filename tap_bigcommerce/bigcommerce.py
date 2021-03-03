@@ -327,10 +327,6 @@ class Bigcommerce():
             concurrent.futures.Future
         """
         future = self.session.get(url, params=params, headers=self.headers)
-        print('LINE 330')
-        print(future.result().request.url)
-        print('XXXXXX')
-        print(future.result().json())
 
         if resolve:
             return future.result()
@@ -401,6 +397,8 @@ class Bigcommerce():
             data = r.data if version == 2 else r.data.get('data', [])
             # unpack nested resources for entire page of results
             data = unpack_resources(data)
+            print('XXXXXX - data - XXXXXX')
+            print(data)
 
             try:
                 for row in data:
