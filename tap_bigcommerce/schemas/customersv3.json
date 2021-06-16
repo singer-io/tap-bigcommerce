@@ -1,0 +1,170 @@
+{
+    "type": "object",
+    "name": "customers",
+    "additionalProperties": false,
+    "properties": {
+        "id": {
+            "$ref": "type-integer.json"
+        },
+        "address_count": {
+            "$ref": "type-integer.json"
+        },
+        "addresses": {
+            "type": [
+                "array",
+                "null"
+            ],
+            "items": {
+                "additionalProperties": false,
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "$ref": "type-integer.json"
+                    },
+                    "address1": {
+                        "$ref": "type-string.json"
+                    },
+                    "address2": {
+                        "$ref": "type-string.json"
+                    },
+                    "address_type": {
+                        "$ref": "type-string.json"
+                    },
+                    "city": {
+                        "$ref": "type-string.json"
+                    },
+                    "company": {
+                        "$ref": "type-string.json"
+                    },
+                    "country": {
+                        "$ref": "type-string.json"
+                    },
+                    "country_code": {
+                        "$ref": "type-string.json"
+                    },
+                    "customer_id": {
+                        "$ref": "type-integer.json"
+                    },
+                    "first_name": {
+                        "$ref": "type-string.json"
+                    },
+                    "last_name": {
+                        "$ref": "type-string.json"
+                    },
+                    "phone": {
+                        "$ref": "type-string.json"
+                    },
+                    "postal_code": {
+                        "$ref": "type-string.json"
+                    },
+                    "state_or_province": {
+                        "$ref": "type-string.json"
+                    }
+                }
+            }
+        },
+        "attributes": {
+            "type": [
+                "array",
+                "null"
+            ],
+            "items": {
+                "additionalProperties": false,
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "$ref": "type-integer.json"
+                    },
+                    "customer_id": {
+                        "$ref": "type-integer.json"
+                    },
+                    "attribute_id": {
+                        "$ref": "type-integer.json"
+                    },
+                    "attribute_value": {
+                        "$ref": "type-string.json"
+                    },
+                    "date_created": {
+                        "$ref": "type-datetime.json"
+                    },
+                    "date_modified": {
+                        "$ref": "type-datetime.json"
+                    }
+                }
+            }
+        },
+        "authentication": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "force_password_reset": {
+                    "$ref": "type-boolean.json"
+                }
+            }
+        },
+        "company": {
+            "$ref": "type-string.json"
+        },
+        "customer_group_id": {
+            "$ref": "type-integer.json"
+        },
+        "email": {
+            "$ref": "type-string.json"
+        },
+        "first_name": {
+            "$ref": "type-string.json"
+        },
+        "last_name": {
+            "$ref": "type-string.json"
+        },
+        "notes": {
+            "$ref": "type-string.json"
+        },
+        "phone": {
+            "$ref": "type-string.json"
+        },
+        "registration_ip_address": {
+            "$ref": "type-string.json"
+        },
+        "tax_exempt_category": {
+            "$ref": "type-string.json"
+        },
+        "date_created": {
+            "$ref": "type-datetime.json"
+        },
+        "date_modified": {
+            "$ref": "type-datetime.json"
+        },
+        "attribute_count": {
+            "$ref": "type-integer.json"
+        },
+        "accepts_product_review_abandoned_cart_emails": {
+            "$ref": "type-boolean.json"
+        },
+        "store_credit_amounts": {
+            "type": [
+                "array",
+                "null"
+            ],
+            "items": {
+                "additionalProperties": false,
+                "type": "object",
+                "properties": {
+                    "amount": {
+                        "$ref": "type-integer.json"
+                    }
+                }
+            }
+        },
+        "channel_ids": {
+            "type": [
+                "array",
+                "null"
+            ],
+            "items": {
+                "additionalProperties": false,
+                "type": "type-integer.json"
+            }
+        }
+    }
+}
