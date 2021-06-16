@@ -125,19 +125,6 @@ class BigCommerce(Client):
             }):
                 yield customer
 
-    def attributevalues(self):
-        for attributeValue in self.api.resource('attribute-values'):
-            yield attributeValue
-
-    @parse_date_string_arguments('bookmark')
-    @validate
-    def customersv3(self, replication_key, bookmark):
-        for customer in self.api.resource('customersv3', {
-            'date_modified:min': bookmark.isoformat(),
-            'include': 'addresses,storecredit,attributes,formfields'
-            }):
-            yield customer
-
     def coupons(self):
 
         for coupon in self.api.resource('coupons'):

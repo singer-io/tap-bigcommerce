@@ -166,11 +166,6 @@ class Stream():
             )
 
 
-class AttributeValues(Stream):
-    name = 'attributevalues'
-    replication_method="FULL_TABLE"
-    replication_key=None
-
 class Orders(Stream):
     name = "orders"
 
@@ -188,15 +183,10 @@ class Coupons(Stream):
 class Customers(Stream):
     name = "customers"
 
-class CustomersV3(Stream):
-    name = "customersv3"
-
 
 STREAMS = {
     'products': Products,
     'coupons': Coupons,
     'customers': Customers,
-    'orders': Orders,
-    'attributevalues': AttributeValues,
-    'customersv3': CustomersV3
+    'orders': Orders
 }
