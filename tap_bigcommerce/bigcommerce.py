@@ -213,10 +213,6 @@ class Bigcommerce():
                 ('addresses',)
             ]
         },
-        'customersv3': {
-            'version': 3,
-            'path': 'customers'
-        },
         'products': {
             'version': 3,
             'path': 'catalog/products',
@@ -228,10 +224,6 @@ class Bigcommerce():
                 'date_created',
                 'expires'
             ]
-        },
-        'attribute-values': {
-           'version': 3,
-           'path': 'customers/attribute-values'
         }
     }
 
