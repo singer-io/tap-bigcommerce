@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="tap-bigcommerce",
-    version="1.1.0",
+    version="1.1.1",
     description="Sync data from your BigCommerce Store",
     author="Chris Goddard",
     url="https://github.com/chrisgoddard",
