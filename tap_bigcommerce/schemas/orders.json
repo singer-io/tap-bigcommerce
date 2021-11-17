@@ -442,7 +442,7 @@
             }
           },
           "external_id": {
-            "$ref": "type-integer.json"
+            "type": ["integer", "string", "null"] 
           }
         }
       }
