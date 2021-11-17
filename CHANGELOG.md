@@ -1,4 +1,8 @@
 # Changelog
+
+## 1.1.2
+  * Change orders schema to allow string as well as integer for `orders.product.[].external_id` [#13](https://github.com/singer-io/tap-bigcommerce/pull/13)
+
 ## 1.1.1
   * Reverts previous version [#10](https://github.com/singer-io/tap-chargebee/pull/10)
 
