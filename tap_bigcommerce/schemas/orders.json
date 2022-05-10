@@ -427,7 +427,7 @@
                   "$ref": "type-string.json"
                 },
                 "value": {
-                  "$ref": "type-number.json"
+                  "type": ["integer", "string", "null"]
                 },
                 "type": {
                   "$ref": "type-string.json"
