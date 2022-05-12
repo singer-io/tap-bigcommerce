@@ -442,7 +442,7 @@
             }
           },
           "external_id": {
-            "type": ["integer", "string", "null"] 
+            "type": ["number", "string", "null"] 
           }
         }
       }
