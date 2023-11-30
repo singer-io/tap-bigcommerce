@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.3
+  * Dependabot update [#19](https://github.com/singer-io/tap-bigcommerce/pull/19)
+
 ## 1.1.2
   * Change orders schema to allow string as well as integer at JSON path `products.[].external_id` [#13](https://github.com/singer-io/tap-bigcommerce/pull/13)
 
