@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.4
+  * Bump requests to 2.32.4 [#22](https://github.com/singer-io/tap-bigcommerce/pull/22)
+
 ## 1.1.3
   * Dependabot update [#19](https://github.com/singer-io/tap-bigcommerce/pull/19)
 
