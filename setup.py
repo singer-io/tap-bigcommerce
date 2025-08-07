@@ -14,6 +14,12 @@ setup(
         "requests==2.32.4",
         "requests-futures==0.9.9"
     ],
+    extras_require={
+        'dev': [
+            'ipdb',
+            'pylint',
+        ]
+    },
     entry_points="""
     [console_scripts]
     tap-bigcommerce=tap_bigcommerce:main
