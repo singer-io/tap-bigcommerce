@@ -153,6 +153,9 @@ class TestLiveAPICalls(unittest.TestCase):
 
     def test_api_get_returns_future(self):
 
+        if self.api_config is None:
+            raise unittest.SkipTest("No BigCommmerce API config file set.")
+
         client = Bigcommerce(**self.api_config)
 
         url = client.make_url(2, 'orders')
