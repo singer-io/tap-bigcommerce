@@ -1,6 +1,6 @@
 """Unit tests for tap_bigcommerce.sync — sync_stream function."""
 import unittest
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import MagicMock, patch
 
 from tap_bigcommerce.sync import sync_stream
 

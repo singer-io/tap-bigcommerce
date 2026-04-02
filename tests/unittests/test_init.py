@@ -1,6 +1,6 @@
 """Unit tests for tap_bigcommerce.__init__ — helper functions."""
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from singer import Catalog, metadata
 

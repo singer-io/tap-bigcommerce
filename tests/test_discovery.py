@@ -1,6 +1,4 @@
 """Tap-tester integration test: discovery."""
-import unittest
-
 from base import BigCommerceBaseTest
 from tap_tester.base_suite_tests.discovery_test import DiscoveryTest
 

@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 import tap_bigcommerce
 
-from .base import BigCommerceBaseTest, STREAM_CONFIG, ALL_STREAM_IDS
+from .base import BigCommerceBaseTest, STREAM_CONFIG
 
 
 class PaginationIntegrationTest(BigCommerceBaseTest, unittest.TestCase):

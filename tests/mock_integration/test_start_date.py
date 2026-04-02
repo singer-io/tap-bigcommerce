@@ -7,7 +7,7 @@ import tap_bigcommerce
 
 from .base import (
     BigCommerceBaseTest, STREAM_CONFIG,
-    INCREMENTAL_STREAMS, FULL_TABLE_STREAMS,
+    FULL_TABLE_STREAMS,
 )
 
 

@@ -3,7 +3,7 @@ import unittest
 
 from singer import metadata
 
-from .base import BigCommerceBaseTest, STREAM_CONFIG, INCREMENTAL_STREAMS
+from .base import BigCommerceBaseTest
 
 
 class DiscoveryIntegrationTest(BigCommerceBaseTest, unittest.TestCase):

@@ -1,6 +1,4 @@
 """Tap-tester integration test: sync canary (duplicate kept for compatibility)."""
-import unittest
-
 from base import BigCommerceBaseTest
 from tap_tester.base_suite_tests.sync_canary_test import SyncCanaryTest
 

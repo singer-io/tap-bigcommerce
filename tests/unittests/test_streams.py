@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock
 
 from tap_bigcommerce.streams import Stream, Orders, Products, Coupons, Customers, STREAMS
 from tap_bigcommerce.client import Client

@@ -4,7 +4,6 @@ Reads JSON schema files and generates mock API response data with
 deterministic, type-conformant values.  Adapted for BigCommerce's
 $ref shared-schema pattern — resolves $ref before generating values.
 """
-import copy
 import json
 import os
 from datetime import datetime, timedelta

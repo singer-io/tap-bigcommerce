@@ -1,6 +1,4 @@
 """Tap-tester integration test: start date."""
-import unittest
-
 from base import BigCommerceBaseTest
 from tap_tester.base_suite_tests.start_date_test import StartDateTest
 

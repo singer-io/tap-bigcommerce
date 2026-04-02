@@ -1,6 +1,4 @@
 """Tap-tester integration test: automatic fields."""
-import unittest
-
 from base import BigCommerceBaseTest
 from tap_tester.base_suite_tests.automatic_fields_test import MinimumSelectionTest
 

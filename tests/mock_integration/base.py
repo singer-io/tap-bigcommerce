@@ -7,13 +7,11 @@ the JSON schema files via MockDataGenerator.
 """
 import copy
 import os
-import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from singer import metadata, Catalog
 
 import tap_bigcommerce
-from tap_bigcommerce.streams import STREAMS
 from tap_bigcommerce.discover import discover_streams
 
 from .mock_data_generator import MockDataGenerator

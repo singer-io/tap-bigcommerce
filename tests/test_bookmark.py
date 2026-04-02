@@ -1,6 +1,4 @@
 """Tap-tester integration test: bookmarks."""
-import unittest
-
 from base import BigCommerceBaseTest
 from tap_tester.base_suite_tests.bookmark_test import BookmarkTest
 

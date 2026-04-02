@@ -1,6 +1,4 @@
 """Tap-tester integration test: pagination."""
-import unittest
-
 from base import BigCommerceBaseTest
 from tap_tester.base_suite_tests.pagination_test import PaginationTest
 

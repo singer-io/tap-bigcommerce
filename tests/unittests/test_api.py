@@ -442,7 +442,7 @@ class TestLiveAPICalls(unittest.TestCase):
     def test_api_get_returns_future(self):
 
         if self.api_config is None:
-            raise unittest.SkipTest("No BigCommmerce API config file set.")
+            raise unittest.SkipTest("No BigCommerce API config file set.")
 
         client = Bigcommerce(**self.api_config)
 
@@ -453,7 +453,7 @@ class TestLiveAPICalls(unittest.TestCase):
     def test_get_orders(self):
 
         if self.api_config is None:
-            raise unittest.SkipTest("No BigCommmerce API config file set.")
+            raise unittest.SkipTest("No BigCommerce API config file set.")
 
         client = Bigcommerce(**self.api_config)
 
@@ -489,7 +489,13 @@ class TestLiveAPICalls(unittest.TestCase):
 
 if __name__ == '__main__':
     suite = unittest.TestSuite([
-        unittest.TestLoader().loadTestsFromTestCase(TestResourceResolution),
-        unittest.TestLoader().loadTestsFromTestCase(TestLiveAPICalls)
-    ]) 
+        unittest.TestLoader().loadTestsFromTestCase(TestFilterExcludedPaths),
+        unittest.TestLoader().loadTestsFromTestCase(TestTransformDates),
+        unittest.TestLoader().loadTestsFromTestCase(TestUnpackNestedResources),
+        unittest.TestLoader().loadTestsFromTestCase(TestResolveResources),
+        unittest.TestLoader().loadTestsFromTestCase(TestBigcommerceResponseHook),
+        unittest.TestLoader().loadTestsFromTestCase(TestBigcommerceUpdateRateLimit),
+        unittest.TestLoader().loadTestsFromTestCase(TestBigcommerceMakeUrl),
+        unittest.TestLoader().loadTestsFromTestCase(TestLiveAPICalls),
+    ])
     unittest.TextTestRunner(verbosity=2).run(suite)

@@ -6,8 +6,6 @@ import tempfile
 import unittest
 from unittest.mock import patch, MagicMock
 
-from singer import Catalog
-
 import tap_bigcommerce
 
 from .base import BigCommerceBaseTest, STREAM_CONFIG, ALL_STREAM_IDS
