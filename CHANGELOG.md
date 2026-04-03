@@ -1,7 +1,8 @@
 # Changelog
 
 ## 1.2.0
-  * Updated python version. [#24](https://github.com/singer-io/tap-bigcommerce/pull/24)
+  * Updated python version 3.12 [#24](https://github.com/singer-io/tap-bigcommerce/pull/24)
+  * Upgraded dependancies
   * Added integration tests.
 
 ## 1.1.4
