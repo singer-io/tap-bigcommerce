@@ -11,7 +11,7 @@ setup(
     py_modules=["tap_bigcommerce"],
     install_requires=[
         "singer-python==6.8.0",
-        "requests==2.32.5",
+        "requests==2.33.1",
         "requests-futures==1.0.2"
     ],
     extras_require={
