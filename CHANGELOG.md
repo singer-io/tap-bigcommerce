@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0
+  * Exclude 403-forbidden streams from discovery instead of failing [#25](https://github.com/singer-io/tap-bigcommerce/pull/25)
+  * Adds unit tests for discovery access checks.
+
 ## 1.2.0
   * Updated python version 3.12 [#24](https://github.com/singer-io/tap-bigcommerce/pull/24)
   * Upgraded dependancies
