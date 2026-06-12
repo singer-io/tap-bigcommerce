@@ -4,7 +4,7 @@ import singer
 from tap_bigcommerce.streams import STREAMS
 from tap_bigcommerce.bigcommerce import BigCommerceForbiddenError
 
-LOGGER = singer.get_logger()
+LOGGER = singer.get_logger().getChild('tap-bigcommerce')
 
 
 def _apply_access_checks(stream_instances):
