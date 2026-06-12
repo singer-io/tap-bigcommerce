@@ -6,7 +6,7 @@ import json
 from datetime import datetime
 from concurrent.futures import Future
 from tap_bigcommerce.bigcommerce import Bigcommerce
-from tap_bigcommerce.bigcommerce import BigCommerceRateLimitException
+from tap_bigcommerce.bigcommerce import BigCommerceRateLimitException, BigCommerceForbiddenError
 from tap_bigcommerce.bigcommerce import filter_excluded_paths
 from tap_bigcommerce.bigcommerce import transform_dates
 from tap_bigcommerce.bigcommerce import unpack_nested_resources
@@ -330,6 +330,33 @@ class TestBigcommerceResponseHook(unittest.TestCase):
         mock_resp.status_code = 429
         mock_resp.headers = {}
         with self.assertRaises(BigCommerceRateLimitException):
+            bc._response_hook(mock_resp)
+
+    @patch('tap_bigcommerce.bigcommerce.FuturesSession')
+    def test_403_raises_forbidden_error(self, MockSession):
+        session = MagicMock()
+        MockSession.return_value = session
+
+        future = MagicMock()
+        resp = MagicMock()
+        resp.status_code = 200
+        resp.headers = {
+            'X-Rate-Limit-Time-Reset-Ms': '1000',
+            'X-Rate-Limit-Time-Window-Ms': '30000',
+            'X-Rate-Limit-Requests-Left': '100',
+            'X-Rate-Limit-Requests-Quota': '150',
+        }
+        resp.json.return_value = {'time': 12345}
+        future.result.return_value = resp
+        session.get.return_value = future
+
+        bc = Bigcommerce(
+            client_id='test', access_token='test', store_hash='test'
+        )
+        mock_resp = MagicMock()
+        mock_resp.status_code = 403
+        mock_resp.headers = {}
+        with self.assertRaises(BigCommerceForbiddenError):
             bc._response_hook(mock_resp)
 
 

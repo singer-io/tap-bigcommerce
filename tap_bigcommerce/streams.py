@@ -136,17 +136,13 @@ class Stream():
         """
         try:
             api = self.client.api
-            endpoint = api.endpoints.get(self.name, {})
-            version = endpoint.get('version', 3)
-            path = endpoint.get('path', self.name)
+            endpoint = api.endpoints[self.name]
+            version = endpoint['version']
+            path = endpoint['path']
             url = api.make_url(version, path)
             api.get(url, {'limit': 1}, resolve=True)
             return True
         except BigCommerceForbiddenError:
-            logger.warning(
-                "Stream '%s' does not have read permission (403), excluding from catalog.",
-                self.name,
-            )
             return False
 
     # The main sync function.

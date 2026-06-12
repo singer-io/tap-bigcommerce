@@ -22,33 +22,6 @@ def _make_mock_stream(name, accessible=True):
     return s
 
 
-def _make_mock_client(forbidden_streams=None):
-    """
-    Return a MagicMock BigCommerce client.
-
-    `forbidden_streams` is a set of stream names whose api.get() will raise
-    BigCommerceForbiddenError; all others succeed.
-    """
-    forbidden_streams = forbidden_streams or set()
-
-    client = MagicMock()
-
-    # Replicate the real endpoints dict so make_url / endpoints lookups work
-    client.api.endpoints = {
-        'orders': {'version': 2, 'path': 'orders'},
-        'products': {'version': 3, 'path': 'catalog/products'},
-        'customers': {'version': 2, 'path': 'customers'},
-        'coupons': {'version': 2, 'path': 'coupons'},
-    }
-
-    # make_url returns a predictable string
-    client.api.make_url.side_effect = lambda version, path: (
-        f"https://api.bigcommerce.com/stores/test/v{version}/{path}"
-    )
-
-    return client
-
-
 # ---------------------------------------------------------------------------
 # _apply_access_checks()
 # ---------------------------------------------------------------------------
@@ -66,26 +39,23 @@ class TestApplyAccessChecks(unittest.TestCase):
 
     # 1. All accessible → all returned
     def test_all_accessible_returns_all_instances(self):
-        client = MagicMock()
         instances = self._all_accessible()
-        result = _apply_access_checks(client, instances)
+        result = _apply_access_checks(instances)
         self.assertEqual(len(result), len(instances))
         self.assertEqual({s.name for s in result}, set(STREAMS.keys()))
 
     # 2. One inaccessible → excluded
     def test_one_inaccessible_is_excluded(self):
-        client = MagicMock()
         instances = self._with_forbidden('orders')
-        result = _apply_access_checks(client, instances)
+        result = _apply_access_checks(instances)
         result_names = {s.name for s in result}
         self.assertNotIn('orders', result_names)
         self.assertEqual(len(result), len(STREAMS) - 1)
 
     # 3. Multiple inaccessible → all excluded
     def test_multiple_inaccessible_all_excluded(self):
-        client = MagicMock()
         instances = self._with_forbidden('orders', 'products')
-        result = _apply_access_checks(client, instances)
+        result = _apply_access_checks(instances)
         result_names = {s.name for s in result}
         self.assertNotIn('orders', result_names)
         self.assertNotIn('products', result_names)
@@ -93,44 +63,39 @@ class TestApplyAccessChecks(unittest.TestCase):
 
     # 4. All inaccessible → BigCommerceForbiddenError
     def test_all_inaccessible_raises_forbidden_error(self):
-        client = MagicMock()
         instances = [_make_mock_stream(name, accessible=False) for name in STREAMS]
         with self.assertRaises(BigCommerceForbiddenError):
-            _apply_access_checks(client, instances)
+            _apply_access_checks(instances)
 
     # 5. Returns only accessible instances (identity check)
     def test_returns_accessible_instances_in_order(self):
-        client = MagicMock()
         instances = self._with_forbidden('coupons')
-        result = _apply_access_checks(client, instances)
+        result = _apply_access_checks(instances)
         # Accessible instances should be the exact objects (same mock identity)
         accessible_originals = [s for s in instances if s.name != 'coupons']
         self.assertEqual(result, accessible_originals)
 
     # 6. Warning logged for excluded stream
     def test_warning_logged_for_excluded_stream(self):
-        client = MagicMock()
         instances = self._with_forbidden('customers')
         with patch('tap_bigcommerce.discover.LOGGER') as mock_logger:
-            _apply_access_checks(client, instances)
+            _apply_access_checks(instances)
             mock_logger.warning.assert_called_once()
             warning_msg = ' '.join(str(a) for a in mock_logger.warning.call_args[0])
             self.assertIn('customers', warning_msg)
 
     # 7. No warning when all accessible
     def test_no_warning_when_all_accessible(self):
-        client = MagicMock()
         instances = self._all_accessible()
         with patch('tap_bigcommerce.discover.LOGGER') as mock_logger:
-            _apply_access_checks(client, instances)
+            _apply_access_checks(instances)
             mock_logger.warning.assert_not_called()
 
     # Forbidden error message contains useful text
     def test_forbidden_error_message_mentions_permissions(self):
-        client = MagicMock()
         instances = [_make_mock_stream(name, accessible=False) for name in STREAMS]
         with self.assertRaises(BigCommerceForbiddenError) as ctx:
-            _apply_access_checks(client, instances)
+            _apply_access_checks(instances)
         self.assertIn('403', str(ctx.exception))
 
 
@@ -145,15 +110,15 @@ class TestDiscoverStreams(unittest.TestCase):
     def test_all_accessible_returns_all_streams(self):
         client = MagicMock()
         with patch('tap_bigcommerce.discover._apply_access_checks',
-                   side_effect=lambda c, instances: instances):
+                   side_effect=lambda instances: instances):
             result = discover_streams(client)
-        self.assertEqual(len(result['streams']), 4)
+        self.assertEqual(len(result['streams']), len(STREAMS))
 
     # 9. Inaccessible stream excluded
     def test_inaccessible_stream_excluded_from_catalog(self):
         client = MagicMock()
 
-        def _filter_orders(c, instances):
+        def _filter_orders(instances):
             return [s for s in instances if s.name != 'orders']
 
         with patch('tap_bigcommerce.discover._apply_access_checks', side_effect=_filter_orders):
@@ -161,7 +126,7 @@ class TestDiscoverStreams(unittest.TestCase):
 
         names = {s['stream'] for s in result['streams']}
         self.assertNotIn('orders', names)
-        self.assertEqual(len(result['streams']), 3)
+        self.assertEqual(len(result['streams']), len(STREAMS) - 1)
 
     # 10. All inaccessible raises BigCommerceForbiddenError
     def test_all_inaccessible_raises(self):
@@ -175,7 +140,7 @@ class TestDiscoverStreams(unittest.TestCase):
     def test_result_has_required_keys(self):
         client = MagicMock()
         with patch('tap_bigcommerce.discover._apply_access_checks',
-                   side_effect=lambda c, instances: instances):
+                   side_effect=lambda instances: instances):
             result = discover_streams(client)
         self.assertIn('streams', result)
         for s in result['streams']:
@@ -189,20 +154,19 @@ class TestDiscoverStreams(unittest.TestCase):
     def test_stream_equals_tap_stream_id(self):
         client = MagicMock()
         with patch('tap_bigcommerce.discover._apply_access_checks',
-                   side_effect=lambda c, instances: instances):
+                   side_effect=lambda instances: instances):
             result = discover_streams(client)
         for s in result['streams']:
             self.assertEqual(s['stream'], s['tap_stream_id'])
 
-    # _apply_access_checks is called with client and stream instances
-    def test_apply_access_checks_called_with_client(self):
+    # _apply_access_checks is called with the stream instances
+    def test_apply_access_checks_called_with_stream_instances(self):
         client = MagicMock()
         with patch('tap_bigcommerce.discover._apply_access_checks',
-                   side_effect=lambda c, instances: instances) as mock_check:
+                   side_effect=lambda instances: instances) as mock_check:
             discover_streams(client)
         mock_check.assert_called_once()
-        call_client, call_instances = mock_check.call_args[0]
-        self.assertIs(call_client, client)
+        (call_instances,) = mock_check.call_args[0]
         self.assertEqual(len(call_instances), len(STREAMS))
 
 
@@ -269,25 +233,21 @@ class TestStreamCheckAccess(unittest.TestCase):
     def test_get_called_with_resolve_true(self):
         instance = self._make_stream_instance(Orders)
         instance.check_access()
-        # Verify api.get was called and resolve=True was passed
-        instance.client.api.get.assert_called_once()
-        _, kwargs_or_args = instance.client.api.get.call_args[0], instance.client.api.get.call_args
-        # resolve=True can be positional or keyword
         call_args = instance.client.api.get.call_args
-        # positional: get(url, params, resolve)
         pos_args = call_args[0]
         kw_args = call_args[1]
         resolve_value = pos_args[2] if len(pos_args) > 2 else kw_args.get('resolve')
         self.assertTrue(resolve_value)
 
-    # warning logged on forbidden
-    def test_warning_logged_on_forbidden(self):
+    # warning is logged at discovery level, not per-stream
+    def test_no_warning_logged_in_check_access_on_forbidden(self):
+        """Per-stream warnings were removed to avoid duplicate logs.
+        The aggregated warning is logged once by _apply_access_checks instead."""
         instance = self._make_stream_instance(Orders, forbidden=True)
         with patch('tap_bigcommerce.streams.logger') as mock_logger:
-            instance.check_access()
-            mock_logger.warning.assert_called_once()
-            msg = ' '.join(str(a) for a in mock_logger.warning.call_args[0])
-            self.assertIn('orders', msg)
+            result = instance.check_access()
+            self.assertFalse(result)
+            mock_logger.warning.assert_not_called()
 
     # check_access uses correct endpoint URL
     def test_uses_correct_endpoint_for_each_stream(self):

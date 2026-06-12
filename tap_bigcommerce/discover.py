@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import os
 import singer
 
 from tap_bigcommerce.streams import STREAMS
@@ -8,11 +7,7 @@ from tap_bigcommerce.bigcommerce import BigCommerceForbiddenError
 LOGGER = singer.get_logger()
 
 
-def get_abs_path(path):
-    return os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
-
-
-def _apply_access_checks(client, stream_instances):
+def _apply_access_checks(stream_instances):
     """
     Probe each stream for read access and return only the accessible ones.
 
@@ -21,16 +16,19 @@ def _apply_access_checks(client, stream_instances):
     streams are accessible, since discovery would produce an empty catalog.
 
     Args:
-        client: BigCommerce client instance.
         stream_instances: list of Stream instances to probe.
 
     Returns:
         list of Stream instances that are accessible.
     """
-    inaccessible_streams = [
-        s.name for s in stream_instances if not s.check_access()
-    ]
-    accessible_streams = [s for s in stream_instances if s.name not in inaccessible_streams]
+    accessible_streams = []
+    inaccessible_streams = []
+
+    for s in stream_instances:
+        if s.check_access():
+            accessible_streams.append(s)
+        else:
+            inaccessible_streams.append(s.name)
 
     if not accessible_streams:
         raise BigCommerceForbiddenError(
@@ -55,7 +53,7 @@ def discover_streams(client):
     returned catalog instead of raising an error, allowing partial discovery.
     """
     stream_instances = [s(client) for s in STREAMS.values()]
-    accessible_instances = _apply_access_checks(client, stream_instances)
+    accessible_instances = _apply_access_checks(stream_instances)
 
     streams = []
     for s in accessible_instances:

@@ -1,4 +1,4 @@
-﻿# Instructions for Building a Singer Tap/Target
+# Instructions for Building a Singer Tap/Target
 
 This document provides guidance for implementing a high-quality Singer Tap (or Target) in compliance with the Singer specification and community best practices. Use it in conjunction with GitHub Copilot or your preferred IDE.
 
