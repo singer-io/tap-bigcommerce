@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="tap-bigcommerce",
-    version="1.2.0",
+    version="1.3.0",
     description="Sync data from your BigCommerce Store",
     author="Chris Goddard",
     url="https://github.com/chrisgoddard",
@@ -11,13 +11,15 @@ setup(
     py_modules=["tap_bigcommerce"],
     install_requires=[
         "singer-python==6.8.0",
-        "requests==2.33.1",
+        "requests==2.34.2",
         "requests-futures==1.0.2"
     ],
     extras_require={
         'dev': [
             'ipdb',
+            'coverage',
             'pylint',
+            'pytest',
         ]
     },
     entry_points="""

@@ -4,6 +4,7 @@ from singer import utils
 import os
 import singer
 import tap_bigcommerce.utilities as tap_utils
+from tap_bigcommerce.bigcommerce import BigCommerceForbiddenError
 
 
 logger = singer.get_logger().getChild('tap-bigcommerce')
@@ -123,6 +124,31 @@ class Stream():
 
     def is_selected(self):
         return self.stream is not None
+
+    def check_access(self) -> bool:
+        """
+        Verify that the API credentials have read access to this stream.
+
+        Makes a lightweight single-record GET request to the stream's endpoint.
+        Returns True if the request succeeds; returns False if the API responds
+        with 403 Forbidden, indicating the credentials lack the required permission.
+        Any other exception is re-raised.
+        """
+        try:
+            api = self.client.api
+            endpoint = api.endpoints[self.name]
+            version = endpoint['version']
+            path = endpoint['path']
+            url = api.make_url(version, path)
+            api.get(url, {'limit': 1}, resolve=True)
+            return True
+        except BigCommerceForbiddenError as exc:
+            logger.warning(
+                "Unauthorized Stream: %s, excluding from catalog. HTTP-Error-Message:'%s'",
+                self.name,
+                str(exc),
+            )
+            return False
 
     # The main sync function.
     def sync(self, state):
