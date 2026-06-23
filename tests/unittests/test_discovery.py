@@ -239,15 +239,20 @@ class TestStreamCheckAccess(unittest.TestCase):
         resolve_value = pos_args[2] if len(pos_args) > 2 else kw_args.get('resolve')
         self.assertTrue(resolve_value)
 
-    # warning is logged at discovery level, not per-stream
-    def test_no_warning_logged_in_check_access_on_forbidden(self):
-        """Per-stream warnings were removed to avoid duplicate logs.
-        The aggregated warning is logged once by _apply_access_checks instead."""
-        instance = self._make_stream_instance(Orders, forbidden=True)
+    # warning is logged by check_access() with the actual error message
+    def test_warning_logged_on_forbidden(self):
+        """check_access() must log a warning that includes the error detail from the exception."""
+        error_detail = "HTTP-error-code: 403, Error: Forbidden"
+        instance = self._make_stream_instance(
+            Orders, error=BigCommerceForbiddenError(error_detail)
+        )
         with patch('tap_bigcommerce.streams.logger') as mock_logger:
             result = instance.check_access()
             self.assertFalse(result)
-            mock_logger.warning.assert_not_called()
+            mock_logger.warning.assert_called_once()
+            msg = ' '.join(str(a) for a in mock_logger.warning.call_args[0])
+            self.assertIn('orders', msg)
+            self.assertIn(error_detail, msg)
 
     # check_access uses correct endpoint URL
     def test_uses_correct_endpoint_for_each_stream(self):
@@ -264,6 +269,19 @@ class TestStreamCheckAccess(unittest.TestCase):
                 call_args = instance.client.api.get.call_args[0]
                 url = call_args[0]
                 self.assertIn(expected_paths[stream_cls.name], url)
+
+    # error message from BigCommerceForbiddenError includes the response body
+    def test_forbidden_error_message_contains_response_text(self):
+        """BigCommerceForbiddenError raised by check_access must carry the API response text."""
+        response_body = '{"title":"Access Denied","status":403}'
+        error_msg = "HTTP-error-code: 403, Error: Forbidden. Response: {}".format(response_body)
+        instance = self._make_stream_instance(
+            Orders, error=BigCommerceForbiddenError(error_msg)
+        )
+        with patch('tap_bigcommerce.streams.logger') as mock_logger:
+            instance.check_access()
+            logged = ' '.join(str(a) for a in mock_logger.warning.call_args[0])
+            self.assertIn(response_body, logged)
 
 
 class TestBigCommerceEndpointsCompleteness(unittest.TestCase):

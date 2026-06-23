@@ -142,7 +142,12 @@ class Stream():
             url = api.make_url(version, path)
             api.get(url, {'limit': 1}, resolve=True)
             return True
-        except BigCommerceForbiddenError:
+        except BigCommerceForbiddenError as exc:
+            logger.warning(
+                "Unauthorized Stream: %s, excluding from catalog. HTTP-Error-Message:'%s'",
+                self.name,
+                str(exc),
+            )
             return False
 
     # The main sync function.

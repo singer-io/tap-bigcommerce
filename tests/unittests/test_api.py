@@ -356,8 +356,11 @@ class TestBigcommerceResponseHook(unittest.TestCase):
         mock_resp = MagicMock()
         mock_resp.status_code = 403
         mock_resp.headers = {}
-        with self.assertRaises(BigCommerceForbiddenError):
+        mock_resp.text = '{"title":"Access Denied","status":403}'
+        with self.assertRaises(BigCommerceForbiddenError) as ctx:
             bc._response_hook(mock_resp)
+        self.assertIn('403', str(ctx.exception))
+        self.assertIn(mock_resp.text, str(ctx.exception))
 
 
 class TestBigcommerceUpdateRateLimit(unittest.TestCase):

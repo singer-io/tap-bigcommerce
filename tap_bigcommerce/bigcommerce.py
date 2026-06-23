@@ -289,9 +289,9 @@ class Bigcommerce():
             elif resp.status_code == 429:
                 raise BigCommerceRateLimitException(resp)
             elif resp.status_code == 403:
+                error_detail = resp.text[:200] if resp.text else "No additional details"
                 raise BigCommerceForbiddenError(
-                    "HTTP-error-code: 403, Error: Forbidden — the credentials do not "
-                    "have access to the requested resource."
+                    f"URL: {resp.url}, HTTP-Error-Code: 403, HTTP-Error-Message: {error_detail}"
                 )
             else:
                 raise HTTPError(resp)
