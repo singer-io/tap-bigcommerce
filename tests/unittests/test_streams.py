@@ -112,11 +112,13 @@ class TestIsBookmarkOld(unittest.TestCase):
         self.assertFalse(self.stream.is_bookmark_old(None, None))
 
     def test_non_date_replication_key_uses_direct_comparison(self):
-        """When replication_key is 'id', direct > comparison is used."""
+        """When replication_key is 'id', direct >= comparison is used.
+        Equal values return True (bookmark is considered old) to avoid missing
+        records at the boundary."""
         self.stream.replication_key = 'id'
         self.assertTrue(self.stream.is_bookmark_old(100, 50))
         self.assertFalse(self.stream.is_bookmark_old(50, 100))
-        self.assertFalse(self.stream.is_bookmark_old(50, 50))
+        self.assertTrue(self.stream.is_bookmark_old(50, 50))
 
 
 # ------------------------------------------------------------------ #
