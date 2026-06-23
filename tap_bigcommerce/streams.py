@@ -42,9 +42,9 @@ class Stream():
 
         if self.replication_key in ['date_modified', 'date_created']:
             return utils.strptime_with_tz(
-                value) > utils.strptime_with_tz(bookmark)
+                value) >= utils.strptime_with_tz(bookmark)
         else:
-            return value > bookmark
+            return value >= bookmark
 
     def update_session_bookmark_if_old(self, value):
         if self.session_bookmark is None:
