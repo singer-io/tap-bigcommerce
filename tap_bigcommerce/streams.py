@@ -69,30 +69,11 @@ class Stream():
         return schema_loader.load(self.name)
 
     def load_field_metadata(self, mdata, schema, parent=()):
-        if 'object' in schema.get('type', []):
-            for field_name, field_schema in schema['properties'].items():
-                inclusion = 'automatic' if (
-                    field_name in self.key_properties or
-                    field_name == self.replication_key
-                ) and (
-                    parent == ()
-                ) else 'available'
-
-                breadcrumb = parent + ('properties', field_name)
-
-                mdata = metadata.write(
-                    mdata,
-                    breadcrumb,
-                    'inclusion',
-                    inclusion
-                )
-
-                mdata = self.load_field_metadata(
-                    mdata, field_schema, breadcrumb)
-
-        elif 'array' in schema.get('type', []):
-            mdata = self.load_field_metadata(
-                mdata, schema.get('items', {}), parent + ('items',))
+        for field_name in schema['properties'].keys():
+            if field_name in self.key_properties or field_name == self.replication_key:
+                mdata = metadata.write(mdata, ('properties', field_name), 'inclusion', 'automatic')
+            else:
+                mdata = metadata.write(mdata, ('properties', field_name), 'inclusion', 'available')
 
         return mdata
 

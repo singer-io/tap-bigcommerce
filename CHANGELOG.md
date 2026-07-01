@@ -1,5 +1,9 @@
 # Changelog
 
+
+## 1.3.1
+  * Update tap to write metadata for root schema fields [#28](https://github.com/singer-io/tap-bigcommerce/pull/28)
+
 ## 1.3.0
   * Exclude 403-forbidden streams from discovery instead of failing [#25](https://github.com/singer-io/tap-bigcommerce/pull/25)
   * Adds unit tests for discovery access checks.
