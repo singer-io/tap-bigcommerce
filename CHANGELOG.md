@@ -1,6 +1,11 @@
 # Changelog
 
 
+## 2.0.0
+  * Schema updates for warehouse compatibility: allow `null` for optional container fields in `products`, `coupons`, and `orders`.
+  * `products.custom_fields` is now strictly aligned to BigCommerce docs as `array|null` of `{id, name, value}` objects. [#29](https://github.com/singer-io/tap-bigcommerce/pull/29)
+
+
 ## 1.3.1
   * Update tap to write metadata for root schema fields [#28](https://github.com/singer-io/tap-bigcommerce/pull/28)
 
