@@ -28,7 +28,7 @@
       "$ref": "type-string.json"
     },
     "applies_to": {
-      "type": "object",
+      "type": ["object", "null"],
       "additionalProperties": false,
       "properties": {
         "entity": {
