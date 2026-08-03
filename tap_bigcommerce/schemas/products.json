@@ -51,7 +51,7 @@
       "$ref": "type-string.json"
     },
     "categories": {
-      "type": "array",
+      "type": ["array", "null"],
       "items": {
         "$ref": "type-integer.json"
       }
@@ -81,7 +81,7 @@
       "$ref": "type-boolean.json"
     },
     "related_products": {
-      "type": "array",
+      "type": ["array", "null"],
       "items": {
         "$ref": "type-integer.json"
       }
@@ -209,21 +209,24 @@
       "$ref": "type-integer.json"
     },
     "custom_fields": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "$ref": "type-string.json"
-        },
-        "value": {
-          "$ref": "type-string.json"
-        },
-        "id": {
-          "$ref": "type-integer.json"
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "type-string.json"
+          },
+          "value": {
+            "$ref": "type-string.json"
+          },
+          "id": {
+            "$ref": "type-integer.json"
+          }
         }
       }
     },
     "bulk_pricing_rules": {
-      "type": "array",
+      "type": ["array", "null"],
       "items": {
         "type": "object",
         "properties": {

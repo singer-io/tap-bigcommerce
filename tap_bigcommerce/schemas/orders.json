@@ -169,7 +169,7 @@
       "$ref": "type-string.json"
     },
     "billing_address": {
-      "type": "object",
+      "type": ["object", "null"],
       "additionalProperties": false,
       "properties": {
       	"first_name": {
